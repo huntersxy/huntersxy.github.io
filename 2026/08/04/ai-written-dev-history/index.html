@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    
+    <!-- ### Dark Mode: 必须在样式表加载前执行, 避免亮色闪屏 ### -->
+    <meta name="color-scheme" content="light dark">
+    <script>
+        !function () {
+            try {
+                var s = localStorage.getItem('suka-dark-mode');
+                if (s === '1' || (s !== '0' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) { /* localStorage 不可用时跟随系统由 CSS 处理 */ }
+        }();
+    </script>
+    
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- avatar (文章卡片/文章页头像, 为外链时提前建连加速首图) -->
+
+    <link rel="preconnect" href="https://q.qlogo.cn">
+
+
+<!-- busuanzi -->
+
+    <link rel="preconnect" href="https://busuanzi.ibruce.info" crossorigin>
+
+
+<!-- comment -->
+
+
+
+
+
+    <link rel="preconnect" href="https://cdn-city.livere.com" crossorigin>
+    <link rel="preconnect" href="https://www.livere.org" crossorigin>
+
+
+
+<!-- analytics -->
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://fastly.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+
+    <!-- Title -->
+    <title>用AI写了个开发历程，不尽人意 | In Huntersxy</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;x-icon" href="/img/favicon/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png"><link rel="icon" type="image&#x2F;png" sizes="192x192" href="/img/favicon/favicon-192x192.png"><link rel="icon" type="image&#x2F;png" sizes="32x32" href="/img/favicon/favicon-32x32.png"><link rel="icon" type="image&#x2F;png" sizes="16x16" href="/img/favicon/favicon-16x16.png"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#e8b8c8"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f141b">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #0070ff;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #0070ff;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    .post-entry .card-body a {
+        color: #0070ff;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #0070ff;
+    }
+
+    .navbar-link:hover {
+        color: #0070ff;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+
+    
+    /* 卡片圆角 (首页卡片/文章卡片/画廊/友链等), 由 _config.yml 的 post_entry.radius 控制 */
+    body {
+        --card-radius: 10px;
+        --post-entry-raise: 6;
+    }
+    
+
+    
+    /* 来必力评论融入主题: 组件为 Shadow DOM, 通过 CSS 变量穿透定制 */
+    livere-comment {
+        --livere-primary: #0070ff;
+        --livere-bg: #f8f9fa;
+        --livere-line: #e5e7eb;
+        --livere-popup-line: #e5e7eb;
+        --background: #fff;
+        --border-color: #e5e7eb;
+        --input-border-color: #d5d9e0;
+        --input-font-color: #50596c;
+        --input-placeholder-color: #acb3c2;
+        --button-hover-background: #2b7fff;
+        --button-active-background: #0070ff;
+        --indicator-color: #0070ff;
+        --outline-color: #0070ff;
+        --category-font-color: #acb3c2;
+        --skintone-border-radius: .5rem;
+    }
+    
+</style><link rel="stylesheet" href="/css/style.min.css?v=1.8.2">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/css/highlight/github.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/css/highlight/github.min.css"></noscript>
+
+
+
+
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="In Huntersxy"><meta name="msapplication-starturl" content="https://blog.xiey.work"><meta name="msapplication-navbutton-color" content="#e8b8c8"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="In Huntersxy"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="/manifest.json">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="用AI写了个开发历程，不尽人意 | In Huntersxy"><meta property="og:site_name" content="In Huntersxy"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.xiey.work/2026/08/04/ai-written-dev-history/"><meta property="og:locale" content="zh-CN"><meta name="description" content="从一个二次创作资源站到完整工程化平台：小泉动漫二创站 xqecz 的开发历程 记录一下最近几个月维护一个个人项目的过程。 一个项目从「能跑」到「好维护」，中间到底需要经历什么？ - Huntersxy - In Huntersxy"><meta name="keywords" content="项目复盘, AI, 博客,Hexo,前端,折腾"><meta property="article:published_time" content="2026-08-04T17:33:00.000Z"><meta property="article:modified_time" content="2026-08-04T17:33:00.000Z"><meta property="og:updated_time" content="2026-08-04T17:33:00.000Z"><meta property="article:author" content="Huntersxy"><meta property="article:tag" content="项目复盘, AI, 博客,Hexo,前端,折腾"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://blog.xiey.work/2026/08/04/ai-written-dev-history/">
+
+    <meta name="generator" content="Hexo 8.1.2">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://blog.xiey.work/2026/08/04/ai-written-dev-history/",
+    "@type": "BlogPosting",
+    "logo": "https://blog.xiey.work/img/favicon/favicon-192x192.png",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://blog.xiey.work/2026/08/04/ai-written-dev-history/"
+    },
+    "headline": "用AI写了个开发历程，不尽人意 | In Huntersxy",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://blog.xiey.work/img/favicon/favicon-192x192.png"
+    },
+    
+    "datePublished": "2026-08-04T17:33:00.000Z",
+    "dateModified": "2026-08-04T17:33:00.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "Huntersxy",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://q.qlogo.cn/headimg_dl?dst_uin=1833505972&amp;spec=640&amp;img_type=jpg"
+        },
+        "description": "纸上得来终觉浅，绝知此事要躬行"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "In Huntersxy",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://blog.xiey.work/img/favicon/favicon-192x192.png"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://blog.xiey.work/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "项目复盘, AI, 博客,Hexo,前端,折腾",
+    "description": "从一个二次创作资源站到完整工程化平台：小泉动漫二创站 xqecz 的开发历程 记录一下最近几个月维护一个个人项目的过程。 一个项目从「能跑」到「好维护」，中间到底需要经历什么？ - Huntersxy - In Huntersxy"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    <style>body:before{content:"";position:fixed;top:0;left:0;right:0;height:100vh;height:100lvh;z-index:-50;opacity:.5;pointer-events:none;background:linear-gradient(rgb(24 32 44 / .26), rgb(24 32 44 / .26)), url(/img/83adfc5c406b4999bb31341f45d5c51a.webp) center/cover;}</style><script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script><link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><script>if("serviceWorker" in navigator){var h=location.hostname;if(h!=="localhost"&&h!=="127.0.0.1"&&location.protocol!=="file:"){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}}</script>
+</head>
+
+    <body class="site-inner">
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/">In Huntersxy</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                纸上得来终觉浅，绝知此事要躬行
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/" class="navbar-link">首页</a>
+    
+    
+        <a href="/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags/" class="navbar-link">Tags</a>
+    
+        <a href="/gallery/" class="navbar-link">Gallery</a>
+    
+        <a href="/links/" class="navbar-link">Links</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=In Huntersxy&url=https://blog.xiey.work&pic=https://blog.xiey.work/img/favicon/favicon-192x192.png&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=In Huntersxy&url=https://blog.xiey.work&via=Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.xiey.work&title=画廊" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=In Huntersxy&title=画廊&summary=Huntersxy 的个人博客，记录技术折腾、折腾记录与生活点滴。&pics=https://blog.xiey.work/img/favicon/favicon-192x192.png&url=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://blog.xiey.work&text=画廊" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAAAAAB0L9x7AAABhElEQVR42u3aQQ7CMAxE0d7/0rBhASi2x0mVTqvfDQK16UOyEtvJ8TK4DhAgQNwCcSTXzwOf79+/Z88o44LwRQyDZjBgGGB/98rjgrBG/AdO9zPDjMYF8QzEKNjCF4B4NGJ0T7ZggXgGIlpoMkCUAJ2+ioLYjsgGXvk8LdsGsRVRFq0CrArG5aocxFaEujhF9yvJTDihgbBFdAreLMnNglhewEBcjpgJqE4S1JoxQVggRoGjvFhtrqZBCsIekU0+ETB7SfXHQHgiykaG2BDJfpMWMBA2iCjQ1MZZ9nzZiAVhjaiapJ0AVgtmEN4IdUNWLYiXVlEQFgilUd45qKE020B4I5SJqVMcV41XEP6ImaDMNmGnV1EQdoipBpiQCEsHAEFYIDoTT5UQV8UUiHsgZg5mqIVStakDwhehTEDKQdDudxDeCPUAoFpIL1VgIOwR6qGd5Z0fELdBVIMrTfhhMx6ENUIJsu6GXZkEg7BFqAcvss25qtGylG2D2Iq48gIBAoQ14g0If1joBXOTDgAAAABJRU5ErkJggg==" alr="QRCode" loading="lazy" decoding="async">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+        <a href="/atom.xml" target="_blank" class="navbar-link">RSS</a>
+    
+</nav>
+</header>
+
+
+            <!-- # PJAX 无刷新加载容器 (与 _config.yml 的 pjax.container 对应) # -->
+            <div id="pjax-container">
+                
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">用AI写了个开发历程，不尽人意</h1>
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb" src="https://q.qlogo.cn/headimg_dl?dst_uin=1833505972&amp;spec=640&amp;img_type=jpg" loading="lazy" decoding="async" alt="Huntersxy's Avatar">
+        <span>2026-08-05</span>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=用AI写了个开发历程，不尽人意&url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/&pic=https://blog.xiey.work/img/favicon/favicon-192x192.png&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=用AI写了个开发历程，不尽人意&url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/&via=Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xiey.work/2026/08/04/ai-written-dev-history/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/&title=In Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=In Huntersxy&title=In Huntersxy&summary=Huntersxy 的个人博客，记录技术折腾、折腾记录与生活点滴。&pics=https://blog.xiey.work/img/favicon/favicon-192x192.png&url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://blog.xiey.work/2026/08/04/ai-written-dev-history/&text=In Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAAAAABQV18IAAAB3UlEQVR42u3by5LDIAxEUf//T89ssshMQXfL9gLE9SaPcpLjKhkhQa6fBY8LFChQoAaoSxx/PvB5/f9x9D3fryu/A6oPahh0gy8cvT/7rLuI4e+AaoUaBeosYFUgj74r+R1QZ6HUDaDeUxcJ6mzULIhtggV1NGqWKGeTPpWA3c3weJYAanmUCtg3H1+rZkAtjbJNhyDI04L1ta4LqKVRKhBnA+yscVFN5KB6otJkqZKzGniT56B6odzJ5WaqmRSqgRVUL5QNwqAZKwvNoBAB1RdVmdwlN0pycaB6oSoLiUnBqYoKeT6oNijXjEgWqlXxmgzOoPqg0g0RSZE6gyVwUH1QlYT6ZCFb3QSg+qHSyZ07xxUOanAG1QuVJuS0YHCNtXLXBdRWKBV4biBMFhndxYLqi3KTuTRR3yksQPVCqcLxTgMkKWSnxQmodii3CO2wSbNVJm1Q7VDJZsEoYM15oM5ApUFeGTCTjTelChnUFqh0o6BsygdFbLLADaoHKtlUk04Ak4ZGeQMOqC1R1WTsFopcwRB3h0FtjUoScLp52SHiHRygjkC5AvROwwTUuai02Z8uQpb+DQJqO9STP11UEvgrkzxQy6OSBcQKIhk4413WoLZDrXSAAgUK1NfxC82lMYAO5io4AAAAAElFTkSuQmCC" alt="QRCode" loading="lazy" decoding="async">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E4%BB%8E%E4%B8%80%E4%B8%AA%E4%BA%8C%E6%AC%A1%E5%88%9B%E4%BD%9C%E8%B5%84%E6%BA%90%E7%AB%99%E5%88%B0%E5%AE%8C%E6%95%B4%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%B9%B3%E5%8F%B0%EF%BC%9A%E5%B0%8F%E6%B3%89%E5%8A%A8%E6%BC%AB%E4%BA%8C%E5%88%9B%E7%AB%99-xqecz-%E7%9A%84%E5%BC%80%E5%8F%91%E5%8E%86%E7%A8%8B"><span class="post-toc-number">1.</span> <span class="post-toc-text">从一个二次创作资源站到完整工程化平台：小泉动漫二创站 xqecz 的开发历程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">写在前面</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E4%B8%80%E5%BC%80%E5%A7%8B%EF%BC%9A%E5%8F%AA%E6%98%AF%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%86%85%E5%AE%B9%E5%88%86%E4%BA%AB%E7%AB%99"><span class="post-toc-number">2.</span> <span class="post-toc-text">一开始：只是一个简单的内容分享站</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E8%B0%83%E6%95%B4%EF%BC%9A%E5%BC%95%E5%85%A5%E7%8B%AC%E7%AB%8B-Worker"><span class="post-toc-number">3.</span> <span class="post-toc-text">后端架构调整：引入独立 Worker</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%9B%BE%E7%89%87%E7%B3%BB%E7%BB%9F%E4%BC%98%E5%8C%96%EF%BC%9AWebP-%E5%85%A8%E9%93%BE%E8%B7%AF%E6%94%B9%E9%80%A0"><span class="post-toc-number">4.</span> <span class="post-toc-text">图片系统优化：WebP 全链路改造</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%89%8D%E7%AB%AF%E9%87%8D%E6%9E%84%EF%BC%9A%E4%BB%8E%E8%83%BD%E8%BF%90%E8%A1%8C%E5%88%B0%E5%8F%AF%E7%BB%B4%E6%8A%A4"><span class="post-toc-number">5.</span> <span class="post-toc-text">前端重构：从能运行到可维护</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E6%B8%85%E7%90%86%E5%8E%86%E5%8F%B2%E4%BB%A3%E7%A0%81%EF%BC%9A%E5%88%A0%E9%99%A4%E6%AF%94%E6%96%B0%E5%A2%9E%E6%9B%B4%E9%87%8D%E8%A6%81"><span class="post-toc-number">6.</span> <span class="post-toc-text">清理历史代码：删除比新增更重要</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#UI-%E6%A1%86%E6%9E%B6%E8%BF%81%E7%A7%BB%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%8E-Ant-Design-%E6%8D%A2%E5%88%B0-Arco"><span class="post-toc-number">7.</span> <span class="post-toc-text">UI 框架迁移：为什么从 Ant Design 换到 Arco</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%B0%8F%E5%8A%9F%E8%83%BD%E8%83%8C%E5%90%8E%E7%9A%84%E7%BB%86%E8%8A%82"><span class="post-toc-number">8.</span> <span class="post-toc-text">瀑布流布局优化：一个小功能背后的细节</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#CI-x2F-CD-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%EF%BC%9A%E4%BB%8E%E6%89%8B%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%88%B0%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83"><span class="post-toc-number">9.</span> <span class="post-toc-text">CI&#x2F;CD 自动部署：从手动上传到自动发布</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#pnpm-%E7%8E%AF%E5%A2%83%E9%97%AE%E9%A2%98"><span class="post-toc-number">9.1.</span> <span class="post-toc-text">pnpm 环境问题</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#FTP-%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96"><span class="post-toc-number">9.2.</span> <span class="post-toc-text">FTP 部署优化</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%AE%89%E5%85%A8%E4%BC%98%E5%8C%96%EF%BC%9A%E5%85%AC%E5%BC%80%E9%A1%B9%E7%9B%AE%E5%BF%85%E9%A1%BB%E8%80%83%E8%99%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="post-toc-number">10.</span> <span class="post-toc-text">安全优化：公开项目必须考虑的问题</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#XSS"><span class="post-toc-number">10.1.</span> <span class="post-toc-text">XSS</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%95%8F%E6%84%9F%E8%AF%8D%E8%BF%87%E6%BB%A4"><span class="post-toc-number">10.2.</span> <span class="post-toc-text">敏感词过滤</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Cookie-%E5%AE%89%E5%85%A8"><span class="post-toc-number">10.3.</span> <span class="post-toc-text">Cookie 安全</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%BD%93%E5%89%8D%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="post-toc-number">11.</span> <span class="post-toc-text">当前项目结构</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93"><span class="post-toc-number">12.</span> <span class="post-toc-text">一些个人总结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92"><span class="post-toc-number">13.</span> <span class="post-toc-text">后续计划</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h1 id="从一个二次创作资源站到完整工程化平台：小泉动漫二创站-xqecz-的开发历程"><a href="#从一个二次创作资源站到完整工程化平台：小泉动漫二创站-xqecz-的开发历程" class="headerlink" title="从一个二次创作资源站到完整工程化平台：小泉动漫二创站 xqecz 的开发历程"></a>从一个二次创作资源站到完整工程化平台：小泉动漫二创站 xqecz 的开发历程</h1><blockquote>
+<p>记录一下最近几个月维护一个个人项目的过程。</p>
+<p>一个项目从「能跑」到「好维护」，中间到底需要经历什么？</p>
+</blockquote>
+<span id="more"></span>
+
+<p>项目地址：</p>
+<p>GitHub：<a target="_blank" rel="noopener" href="https://github.com/huntersxy/xqecz">https://github.com/huntersxy/xqecz</a></p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>最开始做小泉动漫二创站（xqecz）的时候，其实并没有想太多。</p>
+<p>目标很简单：</p>
+<p>做一个可以上传、浏览、分享二次创作内容的网站。</p>
+<p>最初版本更像一个个人作品展示站：</p>
+<ul>
+<li>上传图片</li>
+<li>内容展示</li>
+<li>标签分类</li>
+<li>评论互动</li>
+<li>简单后台管理</li>
+</ul>
+<p>但是随着功能不断增加，项目开始逐渐偏离最初的简单状态。</p>
+<p>图片越来越多。</p>
+<p>后台功能越来越复杂。</p>
+<p>前端页面越来越臃肿。</p>
+<p>原本几个文件就能解决的问题，后来需要考虑：</p>
+<ul>
+<li>性能</li>
+<li>可维护性</li>
+<li>安全</li>
+<li>自动部署</li>
+<li>服务拆分</li>
+</ul>
+<p>这也是很多个人项目都会经历的过程：</p>
+<blockquote>
+<p>第一次开发解决的是「有没有」。</p>
+<p>后续迭代解决的是「能不能长期活下去」。</p>
+</blockquote>
+<p>根据 Git 提交记录来看，整个项目经历了三个主要阶段：</p>
+<ol>
+<li>早期 Vue + Go 单体开发阶段</li>
+<li>前后端持续优化阶段</li>
+<li>当前 Monorepo + 多服务架构阶段</li>
+</ol>
+<p>三个仓库累计提交超过 350 次。</p>
+<p>其中当前 xqecz Monorepo 在 2026-07-29 到 2026-08-04 期间完成了 59 次迭代。</p>
+<p>当前技术栈：</p>
+<ul>
+<li>NestJS 11</li>
+<li>TypeORM</li>
+<li>MySQL</li>
+<li>Redis</li>
+<li>Go 1.25 gRPC Worker</li>
+<li>Vue 3.5</li>
+<li>Vite</li>
+<li>Tailwind CSS</li>
+<li>Arco Design Vue</li>
+</ul>
+<hr>
+<h1 id="一开始：只是一个简单的内容分享站"><a href="#一开始：只是一个简单的内容分享站" class="headerlink" title="一开始：只是一个简单的内容分享站"></a>一开始：只是一个简单的内容分享站</h1><p>早期项目结构其实非常简单。</p>
+<p>前端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Vue3</span><br><span class="line">+</span><br><span class="line">TypeScript</span><br><span class="line">+</span><br><span class="line">Vite</span><br></pre></td></tr></table></figure>
+
+<p>后端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Go</span><br><span class="line">+</span><br><span class="line">Gin</span><br><span class="line">+</span><br><span class="line">GORM</span><br><span class="line">+</span><br><span class="line">MySQL</span><br><span class="line">+</span><br><span class="line">Redis</span><br></pre></td></tr></table></figure>
+
+<p>当时的想法很直接：</p>
+<p>Go 写 API。</p>
+<p>Vue 负责页面。</p>
+<p>MySQL 保存数据。</p>
+<p>Redis 做缓存。</p>
+<p>这种架构对于个人项目来说完全够用。</p>
+<p>甚至很多小型商业项目也是这么开始的。</p>
+<p>但是问题在于：</p>
+<p>项目不是静态的。</p>
+<p>需求会增长。</p>
+<p>比如最开始上传图片：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户上传</span><br><span class="line">↓</span><br><span class="line">服务器保存</span><br><span class="line">↓</span><br><span class="line">返回结果</span><br></pre></td></tr></table></figure>
+
+<p>非常简单。</p>
+<p>后来增加：</p>
+<ul>
+<li>图片压缩</li>
+<li>缩略图生成</li>
+<li>图片审核</li>
+<li>链接预览</li>
+<li>推荐计算</li>
+</ul>
+<p>流程变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">用户上传</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">文件检查</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">图片压缩</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">生成缩略图</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">上传存储</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">计算推荐权重</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">返回结果</span><br></pre></td></tr></table></figure>
+
+<p>这时候问题出现了：</p>
+<p>一次上传可能需要几秒甚至更久。</p>
+<p>API 请求时间越来越长。</p>
+<p>所以后面开始考虑：</p>
+<blockquote>
+<p>业务接口和耗时任务是不是应该分开？</p>
+</blockquote>
+<hr>
+<h1 id="后端架构调整：引入独立-Worker"><a href="#后端架构调整：引入独立-Worker" class="headerlink" title="后端架构调整：引入独立 Worker"></a>后端架构调整：引入独立 Worker</h1><p>后续项目逐渐迁移到了新的 Monorepo 架构。</p>
+<p>新的设计：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Vue</span><br><span class="line">|</span><br><span class="line">|</span><br><span class="line"></span><br><span class="line">NestJS API</span><br><span class="line"></span><br><span class="line">|</span><br><span class="line">---------------</span><br><span class="line"></span><br><span class="line">|                    |</span><br><span class="line"></span><br><span class="line">MySQL                Redis</span><br><span class="line"></span><br><span class="line">|</span><br><span class="line"></span><br><span class="line">gRPC</span><br><span class="line"></span><br><span class="line">|</span><br><span class="line"></span><br><span class="line">Go Worker</span><br><span class="line"></span><br><span class="line">|</span><br><span class="line"></span><br><span class="line">ffmpeg / Tinify / 图片处理</span><br></pre></td></tr></table></figure>
+
+<p>API 服务负责：</p>
+<ul>
+<li>用户</li>
+<li>权限</li>
+<li>内容管理</li>
+<li>数据处理</li>
+</ul>
+<p>Worker 负责：</p>
+<ul>
+<li>图片转换</li>
+<li>缩略图生成</li>
+<li>视频处理</li>
+<li>第三方服务调用</li>
+</ul>
+<p>这样做最大的好处：</p>
+<p>即使图片处理任务很慢，也不会阻塞 API。</p>
+<p>这也是个人项目发展到一定阶段后很自然的一次架构升级。</p>
+<hr>
+<h1 id="图片系统优化：WebP-全链路改造"><a href="#图片系统优化：WebP-全链路改造" class="headerlink" title="图片系统优化：WebP 全链路改造"></a>图片系统优化：WebP 全链路改造</h1><p>图片站最容易遇到的问题：</p>
+<p>不是 CPU。</p>
+<p>而是存储和流量。</p>
+<p>尤其二创站这种项目：</p>
+<p>用户上传图片尺寸通常比较大。</p>
+<p>如果直接保存：</p>
+<p>一张图片可能：</p>
+<p>几 MB。</p>
+<p>几十万个文件之后：</p>
+<p>磁盘压力非常明显。</p>
+<p>所以后来进行了图片系统优化。</p>
+<p>处理流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">上传原图</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">图片压缩</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">转换 WebP</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">生成缩略图</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">前端展示</span><br></pre></td></tr></table></figure>
+
+<p>提交记录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Use WebP for thumbnails (worker + frontend + tests)</span><br></pre></td></tr></table></figure>
+
+<p>不仅 Worker 支持 WebP。</p>
+<p>前端也同步调整。</p>
+<p>最终实现：</p>
+<ul>
+<li>原图减少体积</li>
+<li>缩略图快速加载</li>
+<li>首页浏览体验提升</li>
+</ul>
+<p>对于图片类网站来说：</p>
+<p>优化图片格式往往比优化代码性能更加有效。</p>
+<hr>
+<h1 id="前端重构：从能运行到可维护"><a href="#前端重构：从能运行到可维护" class="headerlink" title="前端重构：从能运行到可维护"></a>前端重构：从能运行到可维护</h1><p>前端其实是变化最大的部分。</p>
+<p>随着页面增加：</p>
+<ul>
+<li>首页</li>
+<li>内容详情</li>
+<li>后台管理</li>
+<li>上传页面</li>
+<li>主题系统</li>
+</ul>
+<p>组件开始越来越复杂。</p>
+<p>早期经常出现：</p>
+<p>一个 Vue 文件几百行甚至上千行。</p>
+<p>例如：</p>
+<p>ContentDetailView</p>
+<p>最开始里面包含：</p>
+<ul>
+<li>评论</li>
+<li>举报</li>
+<li>内容信息</li>
+<li>编辑</li>
+<li>弹窗</li>
+</ul>
+<p>后来拆分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ContentDetailView</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">CommentSections</span><br><span class="line"></span><br><span class="line">ReportModal</span><br><span class="line"></span><br><span class="line">ClaimModal</span><br><span class="line"></span><br><span class="line">其它业务组件</span><br></pre></td></tr></table></figure>
+
+<p>拆分之后：</p>
+<p>每个组件只负责自己的事情。</p>
+<p>维护成本下降很多。</p>
+<hr>
+<h1 id="清理历史代码：删除比新增更重要"><a href="#清理历史代码：删除比新增更重要" class="headerlink" title="清理历史代码：删除比新增更重要"></a>清理历史代码：删除比新增更重要</h1><p>很多开发者喜欢不断添加功能。</p>
+<p>但是项目真正变轻，需要大量删除。</p>
+<p>这次优化做了：</p>
+<ul>
+<li>删除无用组件</li>
+<li>删除重复逻辑</li>
+<li>删除废弃依赖</li>
+<li>合并重复 composable</li>
+</ul>
+<p>其中一次前端重构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">remove dead code and merge duplicated logic</span><br></pre></td></tr></table></figure>
+
+<p>同时处理：</p>
+<ul>
+<li>API 地址环境变量化</li>
+<li>图片懒加载</li>
+<li>路由懒加载</li>
+<li>代码分割</li>
+<li>SEO 优化</li>
+</ul>
+<p>很多时候：</p>
+<p>减少 30% 的无效代码，比增加一个新功能更加重要。</p>
+<hr>
+<h1 id="UI-框架迁移：为什么从-Ant-Design-换到-Arco"><a href="#UI-框架迁移：为什么从-Ant-Design-换到-Arco" class="headerlink" title="UI 框架迁移：为什么从 Ant Design 换到 Arco"></a>UI 框架迁移：为什么从 Ant Design 换到 Arco</h1><p>后台管理系统最开始使用：</p>
+<p>Ant Design Vue。</p>
+<p>但是随着项目视觉方向变化：</p>
+<p>发现一些问题：</p>
+<ul>
+<li>移动端体验一般</li>
+<li>样式定制成本较高</li>
+<li>和整体设计语言不统一</li>
+</ul>
+<p>所以后来迁移到：</p>
+<p>Arco Design Vue。</p>
+<p>迁移内容包括：</p>
+<ul>
+<li>表单</li>
+<li>表格</li>
+<li>弹窗</li>
+<li>后台布局</li>
+</ul>
+<p>提交：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Migrate frontend from Ant Design to Arco Design</span><br></pre></td></tr></table></figure>
+
+<p>选择组件库其实不是看谁组件最多。</p>
+<p>更重要的是：</p>
+<p>它是否符合你的项目长期方向。</p>
+<hr>
+<h1 id="瀑布流布局优化：一个小功能背后的细节"><a href="#瀑布流布局优化：一个小功能背后的细节" class="headerlink" title="瀑布流布局优化：一个小功能背后的细节"></a>瀑布流布局优化：一个小功能背后的细节</h1><p>首页采用了类似图片社区的瀑布流布局。</p>
+<p>最开始：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">window.resize</span><br><span class="line"></span><br><span class="line">setTimeout</span><br></pre></td></tr></table></figure>
+
+<p>监听窗口变化。</p>
+<p>但是实际体验：</p>
+<p>快速拖动窗口时：</p>
+<p>布局会出现延迟。</p>
+<p>甚至停留在错误宽度。</p>
+<p>后来改成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ResizeObserver</span><br><span class="line"></span><br><span class="line">requestAnimationFrame</span><br></pre></td></tr></table></figure>
+
+<p>直接监听容器尺寸。</p>
+<p>优势：</p>
+<ul>
+<li>精度更高</li>
+<li>响应更快</li>
+<li>避免大量 resize 事件</li>
+</ul>
+<p>很多用户体验问题：</p>
+<p>并不是大功能造成的。</p>
+<p>而是这些细节。</p>
+<hr>
+<h1 id="CI-x2F-CD-自动部署：从手动上传到自动发布"><a href="#CI-x2F-CD-自动部署：从手动上传到自动发布" class="headerlink" title="CI&#x2F;CD 自动部署：从手动上传到自动发布"></a>CI&#x2F;CD 自动部署：从手动上传到自动发布</h1><p>最开始部署：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">本地打包</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">上传服务器</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">重启服务</span><br></pre></td></tr></table></figure>
+
+<p>简单项目可以。</p>
+<p>但是频繁更新非常痛苦。</p>
+<p>后来接入：</p>
+<p>GitHub Actions。</p>
+<p>流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">提交代码</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">Actions触发</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">自动安装依赖</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">前后端构建</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">上传服务器</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">自动部署</span><br></pre></td></tr></table></figure>
+
+<p>过程中踩了不少坑。</p>
+<h2 id="pnpm-环境问题"><a href="#pnpm-环境问题" class="headerlink" title="pnpm 环境问题"></a>pnpm 环境问题</h2><p>GitHub Actions 中：</p>
+<p>pnpm&#x2F;action-setup</p>
+<p>经常出现环境问题。</p>
+<p>最后改成：</p>
+<p>corepack 管理。</p>
+<h2 id="FTP-部署优化"><a href="#FTP-部署优化" class="headerlink" title="FTP 部署优化"></a>FTP 部署优化</h2><p>如果每次完整上传：</p>
+<p>速度非常慢。</p>
+<p>所以增加：</p>
+<ul>
+<li>MD5 判断</li>
+<li>增量上传</li>
+<li>构建缓存</li>
+</ul>
+<p>提交：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FTP 使用 MD5 增量上传，缓存跨次生效</span><br></pre></td></tr></table></figure>
+
+<p>部署效率提升明显。</p>
+<hr>
+<h1 id="安全优化：公开项目必须考虑的问题"><a href="#安全优化：公开项目必须考虑的问题" class="headerlink" title="安全优化：公开项目必须考虑的问题"></a>安全优化：公开项目必须考虑的问题</h1><p>项目公开运行之后：</p>
+<p>安全问题越来越明显。</p>
+<p>主要处理：</p>
+<h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><p>用户输入内容：</p>
+<p>不能直接渲染。</p>
+<p>需要：</p>
+<ul>
+<li>Markdown 清理</li>
+<li>HTML 过滤</li>
+<li>安全输出</li>
+</ul>
+<h2 id="敏感词过滤"><a href="#敏感词过滤" class="headerlink" title="敏感词过滤"></a>敏感词过滤</h2><p>早期：</p>
+<p>普通字符串匹配。</p>
+<p>后来改：</p>
+<p>Aho-Corasick 自动机。</p>
+<p>复杂度：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O(n)</span><br></pre></td></tr></table></figure>
+
+<p>一次扫描完成。</p>
+<h2 id="Cookie-安全"><a href="#Cookie-安全" class="headerlink" title="Cookie 安全"></a>Cookie 安全</h2><p>处理：</p>
+<ul>
+<li>Secure</li>
+<li>HttpOnly</li>
+<li>动态判断</li>
+</ul>
+<p>这些功能开发初期可能感觉不到价值。</p>
+<p>但是网站真正上线后：</p>
+<p>都是必须考虑的问题。</p>
+<hr>
+<h1 id="当前项目结构"><a href="#当前项目结构" class="headerlink" title="当前项目结构"></a>当前项目结构</h1><p>现在整体：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">xqecz</span><br><span class="line"></span><br><span class="line">├── frontend</span><br><span class="line"></span><br><span class="line">│ ├── Vue3</span><br><span class="line"></span><br><span class="line">│ ├── Tailwind</span><br><span class="line"></span><br><span class="line">│ └── Arco Design</span><br><span class="line"></span><br><span class="line">├── backend</span><br><span class="line"></span><br><span class="line">│ ├── NestJS</span><br><span class="line"></span><br><span class="line">│ ├── TypeORM</span><br><span class="line"></span><br><span class="line">│ └── Redis</span><br><span class="line"></span><br><span class="line">└── worker</span><br></pre></td></tr></table></figure>
+
+<p>├── Go</p>
+<p>├── gRPC</p>
+<p>└── Media Processing</p>
+<p>相比最开始：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Vue</span><br><span class="line"></span><br><span class="line">Go API</span><br></pre></td></tr></table></figure>
+
+<p>现在已经成为一个完整的小型互联网应用架构。</p>
+<hr>
+<h1 id="一些个人总结"><a href="#一些个人总结" class="headerlink" title="一些个人总结"></a>一些个人总结</h1><p>做这个项目最大的收获：</p>
+<p>不是用了多少技术。</p>
+<p>而是经历了一次完整的软件生命周期。</p>
+<p>从：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">快速实现功能</span><br></pre></td></tr></table></figure>
+
+<p>到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">优化架构</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">解决性能问题</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">提高安全性</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">自动化部署</span><br><span class="line"></span><br><span class="line">↓</span><br><span class="line"></span><br><span class="line">长期维护</span><br></pre></td></tr></table></figure>
+
+<p>很多教程教你：</p>
+<p>怎么写一个项目。</p>
+<p>但是很少有人告诉你：</p>
+<p>怎么维护一个已经写了一万行代码的项目。</p>
+<p>真正困难的地方：</p>
+<p>不是第一次完成。</p>
+<p>而是半年后还能继续修改。</p>
+<p>个人项目最大的价值：</p>
+<p>就是让你经历这些真实问题。</p>
+<hr>
+<h1 id="后续计划"><a href="#后续计划" class="headerlink" title="后续计划"></a>后续计划</h1><p>目前项目还在持续迭代。</p>
+<p>后续准备继续优化：</p>
+<ul>
+<li>推荐算法</li>
+<li>图片处理流水线</li>
+<li>权限系统</li>
+<li>AI 辅助功能</li>
+<li>内容审核流程</li>
+</ul>
+<p>慢慢把这个小项目继续打磨。</p>
+<p>毕竟：</p>
+<p>一个项目从诞生到成熟，本身就是一次工程能力成长的过程。</p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;Huntersxy</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://blog.xiey.work/2026/08/04/ai-written-dev-history/">https://blog.xiey.work/2026/08/04/ai-written-dev-history/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2026-08-05");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2026-08-04T17:33:00.000Z" itemprop="datePublished">2026-08-05</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/tags/%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%9B%98/" rel="tag">#&nbsp;项目复盘</a>
+
+<a class="post-tags-list-item" href="/tags/AI/" rel="tag">#&nbsp;AI</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/2026/08/16/%E4%B8%BB%E9%A2%98%E9%AD%94%E6%94%B9%E8%AE%B0%E5%BD%95/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">主题魔改记录</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/2026/04/28/sci-proposal-template/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">我标题呢</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            
+<!-- LiveRe 新版 Web Component (2025+) -->
+<livere-comment client-id="G4BFanVJhMuLq2bC56sg"></livere-comment>
+<script type="module" src="https://www.livere.org/livere-widget.js"></script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://blog.xiey.work">In Huntersxy</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/huntersxy/hexo-theme-suka-bulie" target="_blank" class="footer-develop-a" rel="external noopener">Suka-bulie</a>
+    </p>
+</footer>
+
+
+            <!-- ### 右侧工具栏 (含暗色模式切换; 置于 PJAX 容器外, 全站常驻) ### -->
+            <!-- right side bar -->
+<div id="RightDownBtn">
+    <a id="btn" href="javascript:void(0)" target="_self" style="">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-xuanfufanhuidingbu">
+                <svg id="icon-xuanfufanhuidingbu" viewBox="0 0 1024 1024">
+                    <path d="M0 512c0 282.624 229.376 512 512 512s512-229.376 512-512S794.624 0 512 0 0 229.376 0 512z"
+                        fill="#1989FA"></path>
+                    <path
+                        d="M736.768 263.68H287.232c-12.288 0-23.04 10.752-23.04 23.04s10.752 23.04 23.04 23.04H737.28c12.288 0 23.04-10.752 23.04-23.04s-10.752-23.04-23.552-23.04m-207.872 105.472c-1.536-1.536-4.608-4.608-7.68-4.608-3.072-1.536-6.144-1.536-7.68-1.536-3.072 0-6.144 0-7.68 1.536-3.072 1.536-4.608 3.072-7.68 4.608l-186.368 186.368c-9.216 9.216-9.216 23.04 0 32.768 9.216 9.216 23.04 9.216 32.768 0l145.92-145.92V737.28c0 12.288 10.752 23.04 23.04 23.04s23.04-10.752 23.04-23.04V442.368l145.92 145.92c4.608 4.608 10.752 6.144 16.896 6.144 6.144 0 12.288-1.536 16.896-6.144 9.216-9.216 9.216-23.04 0-32.768l-187.392-186.368z"
+                        fill="#FFFFFF"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+    <a id="settings-toggle" onclick="toggleSukaSettings()" target="_self" title="设置" aria-label="打开设置" aria-expanded="false">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-caidanfenlei">
+                <svg id="icon-caidanfenlei" viewBox="0 0 1024 1024">
+                    <path
+                        d="M884.736 596.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04s-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M884.736 509.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                    <path
+                        d="M884.736 276.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04s-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M137.216 189.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                    <path
+                        d="M884.736 916.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04 0 47.616-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M137.216 829.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+    <a id="say" class="is-page-hidden" href="#vcomments" target="_self" title="评论" aria-label="评论">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-ketangtaolun">
+                <svg id="icon-ketangtaolun" viewBox="0 0 1234 1024">
+                    <path
+                        d="M736.914286 393.472c-20.114286-46.628571-47.542857-88.685714-84.114286-121.6-34.742857-34.742857-74.971429-62.171429-123.428571-82.285714-46.628571-20.114286-95.085714-30.171429-149.028572-29.257143-53.942857 0-102.4 11.885714-149.028571 32-46.628571 20.114286-86.857143 49.371429-121.6 84.114286-34.742857 34.742857-60.342857 76.8-81.371429 124.342857-20.114286 47.542857-28.342857 96.914286-28.342857 151.771428 1.828571 50.285714 11.885714 98.742857 29.257143 141.714286 19.2 42.971429 42.057143 82.285714 72.228571 116.114286 8.228571 10.057143 14.628571 21.942857 17.371429 34.742857 1.828571 11.885714-2.742857 21.942857-14.628572 27.428571-21.942857 11.885714-49.371429 20.114286-79.542857 25.6-5.485714 1.828571 5.485714 5.485714 34.742857 15.542857 29.257143 10.057143 74.057143 17.371429 134.4 22.857143 27.428571 2.742857 52.114286 4.571429 74.057143 5.485715h59.428572c17.371429 0 32.914286-1.828571 47.542857-2.742858 14.628571-1.828571 27.428571-2.742857 40.228571-4.571428 49.371429-5.485714 95.085714-19.2 137.142857-42.057143 42.971429-21.942857 79.542857-50.285714 111.542858-85.028571 32-34.742857 56.685714-74.057143 74.057142-118.857143 17.371429-44.8 25.6-92.342857 25.6-143.542857 4.571429-53.028571-6.4-104.228571-26.514285-151.771429"
+                        fill="#E6E6E6"></path>
+                    <path
+                        d="M736.914286 393.472c-20.114286-46.628571-47.542857-88.685714-84.114286-121.6-34.742857-34.742857-74.971429-62.171429-123.428571-82.285714-46.628571-20.114286-95.085714-30.171429-149.028572-29.257143-53.942857 0-102.4 11.885714-149.028571 32-46.628571 20.114286-86.857143 49.371429-121.6 84.114286-34.742857 34.742857-60.342857 76.8-81.371429 124.342857-20.114286 47.542857-28.342857 96.914286-28.342857 151.771428 1.828571 50.285714 11.885714 98.742857 29.257143 141.714286 19.2 42.971429 42.057143 82.285714 72.228571 116.114286 8.228571 10.057143 14.628571 21.942857 17.371429 34.742857 1.828571 11.885714-2.742857 21.942857-14.628572 27.428571-21.942857 11.885714-49.371429 20.114286-79.542857 25.6-5.485714 1.828571 5.485714 5.485714 34.742857 15.542857 29.257143 10.057143 74.057143 17.371429 134.4 22.857143 27.428571 2.742857 52.114286 4.571429 74.057143 5.485715h59.428572c17.371429 0 32.914286-1.828571 47.542857-2.742858 14.628571-1.828571 27.428571-2.742857 40.228571-4.571428 49.371429-5.485714 95.085714-19.2 137.142857-42.057143 42.971429-21.942857 79.542857-50.285714 111.542858-85.028571 32-34.742857 56.685714-74.057143 74.057142-118.857143 17.371429-44.8 25.6-92.342857 25.6-143.542857 4.571429-53.028571-6.4-104.228571-26.514285-151.771429"
+                        fill="#22E5B1"></path>
+                    <path
+                        d="M1101.714286 933.814857c-14.628571-8.228571-20.114286-20.114286-19.2-34.742857 2.742857-15.542857 10.057143-29.257143 21.942857-42.971429 37.485714-42.057143 67.657143-89.6 91.428571-144.457142 22.857143-56.685714 36.571429-116.114286 37.485715-179.2 1.828571-67.657143-11.885714-131.657143-36.571429-191.085715s-59.428571-111.542857-102.4-156.342857c-42.971429-44.8-94.171429-79.542857-153.6-106.057143-58.514286-26.514286-120.685714-39.314286-187.428571-41.142857-66.742857-1.828571-129.828571 11.885714-188.342858 36.571429-59.428571 24.685714-109.714286 59.428571-154.514285 102.4-44.8 43.885714-79.542857 94.171429-106.057143 153.6-25.6 59.428571-39.314286 123.428571-39.314286 189.257143-1.828571 64 10.057143 124.342857 32 181.028571 21.942857 56.685714 53.942857 106.971429 94.171429 150.857143 40.228571 42.971429 86.857143 79.542857 140.8 106.971428 53.942857 29.257143 112.457143 46.628571 175.542857 52.114286 15.542857 2.742857 32.914286 4.571429 52.114286 5.485714 19.2 1.828571 39.314286 2.742857 60.342857 2.742858 21.942857 1.828571 47.542857 1.828571 74.971428 0 27.428571-1.828571 57.6-2.742857 92.342857-7.314286 76.8-7.314286 133.485714-17.371429 170.971429-29.257143 37.485714-11.885714 52.114286-19.2 44.8-20.114286-39.314286-3.657143-72.228571-13.714286-101.485714-28.342857"
+                        fill="#E6E6E6"></path>
+                    <path
+                        d="M1056 897.243429c-14.628571-8.228571-20.114286-20.114286-19.2-34.742858 2.742857-15.542857 10.057143-29.257143 21.942857-42.971428 37.485714-42.057143 67.657143-89.6 91.428572-144.457143 22.857143-56.685714 36.571429-116.114286 37.485714-179.2 1.828571-67.657143-11.885714-131.657143-36.571429-191.085714-24.685714-59.428571-59.428571-111.542857-102.4-156.342857-42.971429-45.714286-93.257143-80.457143-152.685714-106.971429-59.428571-25.6-121.6-38.4-188.342857-40.228571-66.742857-1.828571-129.828571 11.885714-188.342857 36.571428-59.428571 24.685714-109.714286 59.428571-154.514286 102.4-44.8 43.885714-79.542857 94.171429-106.057143 153.6-25.6 59.428571-39.314286 123.428571-39.314286 189.257143-1.828571 64 10.057143 124.342857 32 181.028571 21.942857 56.685714 53.942857 106.971429 94.171429 150.857143 40.228571 42.971429 86.857143 79.542857 140.8 106.971429 53.942857 29.257143 112.457143 46.628571 175.542857 52.114286 15.542857 2.742857 32.914286 4.571429 52.114286 5.485714 19.2 1.828571 39.314286 2.742857 60.342857 2.742857 21.942857 1.828571 47.542857 1.828571 74.971429 0 27.428571-1.828571 57.6-2.742857 92.342857-7.314286 76.8-7.314286 133.485714-17.371429 170.971428-29.257143 37.485714-11.885714 52.114286-19.2 44.8-20.114285-39.314286-3.657143-72.228571-13.714286-101.485714-28.342857"
+                        fill="#16D7A3"></path>
+                    <path
+                        d="M896.914286 429.714286H739.657143L768 223.085714c1.828571-5.485714-2.742857-11.885714-8.228571-14.628571-5.485714-4.571429-12.8-4.571429-17.371429 0L499.2 496.457143c-1.828571 1.828571-2.742857 4.571429-4.571429 5.485714-0.914286 1.828571-0.914286 4.571429-0.914285 7.314286 0 8.228571 7.314286 15.542857 15.542857 15.542857h159.085714l-30.171428 233.142857v2.742857c-1.828571 5.485714 0 11.885714 4.571428 15.542857 5.485714 5.485714 15.542857 5.485714 21.942857 0l244.114286-320.914285c2.742857-2.742857 4.571429-7.314286 4.571429-11.885715 0-6.4-7.314286-13.714286-16.457143-13.714285"
+                        fill="#FFFFFF"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+
+    
+    <a id="dark-mode-toggle" onclick="toggleDarkMode()" title="切换亮暗模式" aria-label="切换亮暗模式">
+        <svg class="dm-icon dm-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="dm-icon dm-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+        </svg>
+    </a>
+    
+    <svg aria-hidden="true" style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
+        <symbol id="icon-sun" viewBox="0 0 1024 1024">
+            <path
+                d="M511.99976 511.99976m-511.99976 0a511.99976 511.99976 0 1 0 1023.99952 0 511.99976 511.99976 0 1 0-1023.99952 0Z"
+                fill="#91D2F2"></path>
+            <path
+                d="M144.623932 868.455593C237.679889 964.327548 367.831828 1023.99952 511.99976 1023.99952c269.983873 0 490.99977-209.007902 510.455761-474.031778C956.991551 535.703749 887.559584 527.999753 815.623618 527.999753c-309.535855 0-572.895731 142.055933-670.999686 340.45584z"
+                fill="#198058"></path>
+            <path
+                d="M979.623541 575.99973c-351.319835 0-647.791696 155.655927-741.279653 368.639827A509.359761 509.359761 0 0 0 511.99976 1023.99952c260.839878 0 475.967777-195.111909 507.799762-447.31979a1194.34344 1194.34344 0 0 0-40.175981-0.68z"
+                fill="#1E9969"></path>
+            <path
+                d="M69.711967 769.831639C158.503926 921.815568 323.271848 1023.99952 511.99976 1023.99952a509.455761 509.455761 0 0 0 269.631874-76.783964C657.111692 828.375612 464.271782 751.999648 247.623884 751.999648c-61.575971 0-121.183943 6.271997-177.911917 17.831991z"
+                fill="#6AA33A"></path>
+            <path
+                d="M487.887771 1023.39152c-86.543959-122.151943-236.911889-214.679899-417.591804-252.543881 85.11996 144.919932 239.415888 244.279885 417.591804 252.543881z"
+                fill="#95E652"></path>
+            <path
+                d="M394.159815 167.999921l-45.255979 45.255979L303.647858 167.999921l45.255978-45.255979zM394.159815 503.999764l-45.255979 45.255979L303.655858 503.999764l45.247978-45.247979z"
+                fill="#FFF8E6"></path>
+            <path
+                d="M180.879915 290.719864l45.247979 45.247979-45.255979 45.255978-45.255979-45.255978zM516.903758 290.719864l45.247978 45.247979-45.247978 45.247978-45.247979-45.247978z"
+                fill="#FFF8E6"></path>
+            <path d="M198.087907 185.207913h63.99997v63.99997h-63.99997zM435.671796 422.791802h63.99997v63.99997h-63.99997z"
+                fill="#FFF8E6"></path>
+            <path d="M198.087907 422.791802h63.99997v63.99997h-63.99997zM435.671796 185.207913h63.99997v63.99997h-63.99997z"
+                fill="#FFF8E6"></path>
+            <path
+                d="M348.879836 335.999843m-183.999913 0a183.999914 183.999914 0 1 0 367.999827 0 183.999914 183.999914 0 1 0-367.999827 0Z"
+                fill="#FFEAB3"></path>
+            <path
+                d="M348.879836 335.999843m-159.999925 0a159.999925 159.999925 0 1 0 319.99985 0 159.999925 159.999925 0 1 0-319.99985 0Z"
+                fill="#FFDC80"></path>
+        </symbol>
+        <symbol id="icon-_moon" viewBox="0 0 1024 1024">
+            <path d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0Z" fill="#323232"></path>
+            <path
+                d="M512 512m-407.005867 0a407.005867 407.005867 0 1 0 814.011734 0 407.005867 407.005867 0 1 0-814.011734 0Z"
+                fill="#494A4A"></path>
+            <path
+                d="M748.1344 633.9584c0-1.143467 0.085333-2.286933 0.085333-3.413333a69.512533 69.512533 0 0 0-8.823466-33.979734q-1.058133-1.911467-2.2528-3.7376l-0.187734-0.3072a70.485333 70.485333 0 0 0-5.2736-7.099733l-0.238933-0.273067q-1.3312-1.536-2.730667-3.003733l-0.3072-0.324267a70.894933 70.894933 0 0 0-6.417066-5.819733l-0.5632-0.443733q-1.467733-1.160533-3.003734-2.235734l-0.494933-0.341333q-1.706667-1.2288-3.6352-2.3552l-0.256-0.136533q-1.706667-0.989867-3.413333-1.8944l-0.887467-0.4608q-1.604267-0.802133-3.242667-1.536l-0.6144-0.273067q-1.928533-0.836267-3.9424-1.553067l-0.8192-0.273066a54.8864 54.8864 0 0 0-3.242666-1.024l-1.143467-0.324267a85.248 85.248 0 0 0-3.601067-0.887467l-0.546133-0.119466a67.345067 67.345067 0 0 0-4.1984-0.733867l-1.143467-0.136533q-1.706667-0.2048-3.2768-0.341334l-1.245866-0.1024a74.786133 74.786133 0 0 0-4.386134-0.1536 69.8368 69.8368 0 0 0-20.48 3.037867 104.106667 104.106667 0 0 0-12.1344-11.076267 258.696533 258.696533 0 0 0-449.9456-248.763733 183.1424 183.1424 0 0 1 106.939734-34.2528c5.12 0 10.24 0.221867 15.36 0.631467a183.125333 183.125333 0 0 1 50.5344 11.52h0.170666q3.874133 1.501867 7.68 3.157333l0.256 0.1024 7.441067 3.413333 0.273067 0.136534q3.669333 1.826133 7.253333 3.805866l0.221867 0.119467q3.618133 2.013867 7.133866 4.164267a184.610133 184.610133 0 0 1 26.760534 20.036266h0.085333q2.986667 2.696533 5.870933 5.5296l0.324267 0.3072q2.781867 2.7648 5.461333 5.632l0.443734 0.477867q2.6112 2.833067 5.12 5.768533l0.494933 0.580267q2.4576 2.9184 4.795733 5.956267l0.494934 0.648533q2.321067 3.037867 4.522666 6.178133l0.426667 0.6144q2.2016 3.1744 4.283733 6.4512l0.324267 0.529067q2.116267 3.413333 4.078933 6.826667l0.170667 0.3072c1.553067 2.7136 3.0208 5.495467 4.437333 8.2944a56.149333 56.149333 0 0 0-12.578133 2.304 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009066 41.079467 104.277333 104.277333 0 0 0-42.2912 80.110933 13.653333 13.653333 0 0 0 0 1.4336v0.426667c0 0.136533 0.1024 0.682667 0.187733 1.024s0 0.3072 0.1024 0.4608 0.2048 0.733867 0.324267 1.092267l0.1024 0.3072a15.36 15.36 0 0 0 0.580266 1.416533l0.1024 0.187733a16.520533 16.520533 0 0 0 0.648534 1.211734l0.221866 0.3584c0.221867 0.3584 0.4608 0.733867 0.7168 1.092266l0.221867 0.3072a26.333867 26.333867 0 0 0 2.338133 2.798934l0.119467 0.119466q0.6144 0.631467 1.297067 1.262934l0.2048 0.187733q0.7168 0.648533 1.501866 1.297067 1.706667 1.416533 3.720534 2.781866c0.6656 0.4608 1.348267 0.904533 2.065066 1.348267 26.914133 16.7936 87.995733 28.535467 159.044267 28.535467 19.3536 0 37.956267-0.8704 55.3472-2.474667l-0.494933 0.750933-0.426667 0.6144q-2.2016 3.140267-4.539733 6.178134l-0.477867 0.631466q-2.338133 3.037867-4.795733 5.956267l-0.494934 0.580267q-2.491733 2.935467-5.12 5.7856l-0.443733 0.477866q-2.679467 2.884267-5.461333 5.649067l-0.3072 0.290133q-2.884267 2.833067-5.870934 5.546667a184.8832 184.8832 0 0 1-26.7776 20.036267q-3.515733 2.167467-7.150933 4.181333l-0.187733 0.1024q-3.584 1.979733-7.2704 3.805867l-0.256 0.136533q-3.6864 1.826133-7.458134 3.413333l-0.238933 0.1024q-3.805867 1.706667-7.68 3.157334h-0.136533a183.057067 183.057067 0 0 1-50.551467 11.52c-5.12 0.4096-10.24 0.631467-15.36 0.631466a183.159467 183.159467 0 0 1-106.939733-34.2528 258.5088 258.5088 0 0 0 180.138666 107.093334 109.550933 109.550933 0 0 0-3.259733 26.453333 16.520533 16.520533 0 0 0 0.1024 1.706667v0.529066c0 0.170667 0.136533 0.853333 0.221867 1.262934l0.136533 0.5632 0.392533 1.365333 0.136534 0.4096a13.892267 13.892267 0 0 0 0.733866 1.706667l0.119467 0.238933c0.238933 0.512 0.512 1.006933 0.802133 1.501867l0.273067 0.443733q0.4096 0.682667 0.887467 1.365333l0.273066 0.375467a33.0752 33.0752 0 0 0 2.9184 3.413333l0.1536 0.1536 1.5872 1.553067 0.273067 0.256 1.8432 1.621333q2.116267 1.706667 4.625067 3.413334l2.56 1.706666c33.467733 20.8896 109.431467 35.4816 197.802666 35.4816 119.330133 0 216.046933-26.606933 216.046934-59.409066a131.413333 131.413333 0 0 0-56.285867-102.058667z"
+                fill="#323232"></path>
+            <path
+                d="M573.8496 401.8176v-2.781867a56.200533 56.200533 0 0 0-72.6016-53.725866 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009066 41.079467 104.277333 104.277333 0 0 0-42.257067 80.0768c0 26.385067 77.7728 47.786667 173.7216 47.786667s173.7216-21.384533 173.7216-47.786667a105.659733 105.659733 0 0 0-45.568-82.688z"
+                fill="#CDCCCA"></path>
+            <path
+                d="M293.768533 506.2656a104.277333 104.277333 0 0 1 42.2912-80.110933 42.530133 42.530133 0 0 1 53.009067-41.079467 82.807467 82.807467 0 0 1 134.007467-18.039467 56.32 56.32 0 0 1 43.758933 4.642134 56.2176 56.2176 0 0 0-65.518933-26.4192 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009067 41.079467 104.277333 104.277333 0 0 0-42.325333 80.128c0 8.413867 7.936 16.3328 21.845333 23.210667a13.294933 13.294933 0 0 1-0.0512-1.450667z"
+                fill="#E8E9EC"></path>
+            <path
+                d="M453.4784 166.912a258.338133 258.338133 0 0 0-210.944 108.919467 183.995733 183.995733 0 1 1 0 299.451733 258.6624 258.6624 0 1 0 210.944-408.388267z"
+                fill="#DDAE2A"></path>
+            <path
+                d="M364.834133 608.9216q7.594667 0.631467 15.36 0.648533a183.995733 183.995733 0 0 0 0-367.9744q-7.748267 0-15.36 0.631467a183.995733 183.995733 0 0 1 0 366.6944z"
+                fill="#EDC849"></path>
+            <path
+                d="M794.7776 605.969067c0-1.143467 0.085333-2.286933 0.085333-3.413334a69.973333 69.973333 0 0 0-90.299733-66.833066 102.997333 102.997333 0 0 0-166.656 22.4256 52.906667 52.906667 0 0 0-65.928533 51.0976 129.706667 129.706667 0 0 0-52.599467 99.6352c0 32.8192 96.733867 59.409067 216.046933 59.409066s216.046933-26.606933 216.046934-59.409066a131.413333 131.413333 0 0 0-56.695467-102.912z"
+                fill="#CDCCCA"></path>
+            <path
+                d="M446.481067 735.914667a129.706667 129.706667 0 0 1 52.599466-99.6352 52.906667 52.906667 0 0 1 65.928534-51.080534 102.997333 102.997333 0 0 1 166.6048-22.442666 69.973333 69.973333 0 0 1 54.408533 5.7856 69.973333 69.973333 0 0 0-81.476267-32.853334 102.997333 102.997333 0 0 0-166.656 22.4256 52.906667 52.906667 0 0 0-65.928533 51.0976 129.706667 129.706667 0 0 0-52.599467 99.6352c0 10.478933 9.864533 20.309333 27.170134 28.859734a17.408 17.408 0 0 1-0.0512-1.792z"
+                fill="#E8E9EC"></path>
+        </symbol>
+    </svg>
+
+</div>
+
+<div id="suka-settings" class="suka-settings" aria-hidden="true">
+    <div class="suka-settings-backdrop" data-settings-close></div>
+    <section class="suka-settings-panel" role="dialog" aria-modal="true" aria-labelledby="suka-settings-title">
+        <div class="suka-settings-header">
+            <h2 id="suka-settings-title">设置</h2>
+            <button type="button" class="suka-settings-close" data-settings-close aria-label="关闭设置">×</button>
+        </div>
+        <label class="suka-setting-row">
+            <span>背景粒子特效</span>
+            <input id="setting-particles" type="checkbox">
+            <span class="suka-setting-switch" aria-hidden="true"></span>
+        </label>
+        <label class="suka-setting-row">
+            <span>左上角天气</span>
+            <input id="setting-weather" type="checkbox">
+            <span class="suka-setting-switch" aria-hidden="true"></span>
+        </label>
+    </section>
+</div>
+
+<script>
+    function BackTOP() {
+        // PJAX 无刷新加载: 脚本会随页面内容重复执行, 这里用标记保证只绑定一次
+        if (window.__sukaBackTopInited) return;
+        window.__sukaBackTopInited = true;
+        // 显示/隐藏走 CSS 过渡 (.is-visible); 滚动事件高频触发,
+        // 状态未变化时直接返回, 只在翻转时才查 DOM 改 class
+        var btnState = null;
+        function setVisible(v) {
+            if (v === btnState) return;
+            btnState = v;
+            var el = document.getElementById('RightDownBtn');
+            if (el) el.classList.toggle('is-visible', v);
+        }
+        // 事件全部委托到 document/window, 局部刷新后依然有效 (无 jQuery 依赖)
+        window.addEventListener('scroll', function () {
+            setVisible((window.scrollY || document.documentElement.scrollTop) > 200);
+        }, { passive: true });
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest) return;
+            if (e.target.closest('#btn')) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (e.target.closest('#say')) {
+                e.preventDefault();
+                window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+            } else if (e.target.closest('#readmode')) {
+                document.body.classList.toggle('read-mode');
+            }
+        });
+        // PJAX 刷新后浮动栏是新 DOM, 先隐藏, 等待滚动再显示
+        document.addEventListener('pjax:end', function () {
+            setVisible(false);
+        });
+    }
+
+    function syncCommentButton() {
+        var button = document.getElementById('say');
+        if (!button) return;
+        button.classList.toggle('is-page-hidden', !document.querySelector('#post-card'));
+    }
+
+    function readSukaSetting(name, fallback) {
+        try {
+            var value = localStorage.getItem('suka-setting-' + name);
+            return value === null ? fallback : value === '1';
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function saveSukaSetting(name, value) {
+        try {
+            localStorage.setItem('suka-setting-' + name, value ? '1' : '0');
+        } catch (e) { /* 隐私模式下仅本次生效 */ }
+    }
+
+    function applySukaSetting(name, value) {
+        saveSukaSetting(name, value);
+        if (name === 'particles' && window.SukaParticles) window.SukaParticles.setEnabled(value);
+        if (name === 'weather' && window.SukaWeather) window.SukaWeather.setEnabled(value);
+    }
+
+    function closeSukaSettings() {
+        var panel = document.getElementById('suka-settings');
+        var toggle = document.getElementById('settings-toggle');
+        if (panel) {
+            panel.classList.remove('is-open');
+            panel.setAttribute('aria-hidden', 'true');
+        }
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleSukaSettings() {
+        var panel = document.getElementById('suka-settings');
+        var toggle = document.getElementById('settings-toggle');
+        if (!panel) return;
+        var open = !panel.classList.contains('is-open');
+        panel.classList.toggle('is-open', open);
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function SukaSettings() {
+        if (window.__sukaSettingsInited) {
+            syncCommentButton();
+            return;
+        }
+        window.__sukaSettingsInited = true;
+        var particles = document.getElementById('setting-particles');
+        var weather = document.getElementById('setting-weather');
+        if (particles) {
+            particles.checked = readSukaSetting('particles', true);
+            particles.addEventListener('change', function () { applySukaSetting('particles', particles.checked); });
+        }
+        if (weather) {
+            weather.checked = readSukaSetting('weather', true);
+            weather.addEventListener('change', function () { applySukaSetting('weather', weather.checked); });
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest) return;
+            if (e.target.closest('[data-settings-close]')) closeSukaSettings();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeSukaSettings();
+        });
+        document.addEventListener('pjax:end', syncCommentButton);
+        syncCommentButton();
+    }
+
+    
+    // 暗色模式切换: 与 head 里的前置脚本配合 (localStorage 记忆, 未手动选择时跟随系统)
+    function toggleDarkMode() {
+        var root = document.documentElement;
+        var dark = root.getAttribute('data-theme') === 'dark';
+        if (dark) {
+            root.removeAttribute('data-theme');
+        } else {
+            root.setAttribute('data-theme', 'dark');
+        }
+        // 同步浏览器地址栏颜色 (head 里输出了 light/dark 两个 theme-color meta)
+        var mcs = document.querySelectorAll('meta[name="theme-color"]');
+        for (var i = 0; i < mcs.length; i++) {
+            var m = mcs[i];
+            if (!m.dataset.light) m.dataset.light = m.getAttribute('content');
+            m.setAttribute('content', dark ? m.dataset.light : '#0f141b');
+        }
+        try {
+            localStorage.setItem('suka-dark-mode', dark ? '0' : '1');
+        } catch (e) { /* 隐私模式下 localStorage 不可用, 仅本次会话生效 */ }
+    }
+    
+    BackTOP();
+    SukaSettings();
+</script>
+
+<style>
+    html.suka-weather-disabled #tp-weather-widget {
+        display: none !important;
+    }
+
+    .is-page-hidden {
+        display: none !important;
+    }
+
+    #RightDownBtn {
+        position: fixed;
+        right: 1.875rem;
+        bottom: 1.875rem;
+        padding: 0.3125rem 0.625rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 0.3125rem rgba(0, 0, 0, .4);
+        z-index: 1000;
+        align-items: flex-end;
+        flex-direction: column;
+        display: -moz-flex;
+        display: flex;
+        float: right;
+        /* 动画: 默认隐藏, 加 .is-visible 后上浮淡入 */
+        opacity: 0;
+        transform: translateY(1rem);
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1), visibility .35s;
+    }
+
+    #RightDownBtn.is-visible {
+        opacity: 1;
+        transform: none;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* 按钮: 入场时逐个级联浮现, 悬浮时弹性放大 */
+    #RightDownBtn > a,
+    #RightDownBtn > label {
+        width: 1.5em;
+        height: 1.5em;
+        margin: 0.3125rem 0;
+        opacity: 0;
+        transform: translateY(.5rem) scale(.85);
+        transition: opacity .3s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    #RightDownBtn.is-visible > a,
+    #RightDownBtn.is-visible > label {
+        opacity: 1;
+        transform: none;
+    }
+
+    #RightDownBtn.is-visible > a:nth-child(1) { transition-delay: .05s; }
+    #RightDownBtn.is-visible > a:nth-child(2) { transition-delay: .1s; }
+    #RightDownBtn.is-visible > a:nth-child(3) { transition-delay: .15s; }
+    #RightDownBtn.is-visible > a:nth-child(4) { transition-delay: .2s; }
+    #RightDownBtn.is-visible > a:nth-child(5) { transition-delay: .25s; }
+    #RightDownBtn.is-visible > a:nth-child(6) { transition-delay: .3s; }
+
+    /* 暗色模式下的浮动栏 */
+    [data-theme="dark"] #RightDownBtn {
+        background: #1a212b;
+        box-shadow: 0 0 0.3125rem rgb(0 0 0 / .6);
+    }
+
+    [data-theme="dark"] #RightDownBtn a {
+        color: #c9d3e0;
+    }
+
+    /* 亮色显示月亮 (点击进入暗色), 暗色显示太阳 */
+    #dark-mode-toggle .dm-icon {
+        width: 1.5em;
+        height: 1.5em;
+        display: inline-block;
+    }
+
+    #dark-mode-toggle .dm-icon-sun { display: none; }
+
+    [data-theme="dark"] #dark-mode-toggle .dm-icon-moon { display: none; }
+    [data-theme="dark"] #dark-mode-toggle .dm-icon-sun { display: inline-block; }
+
+
+    .suka-settings {
+        position: fixed;
+        inset: 0;
+        z-index: 1001;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .suka-settings.is-open {
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .suka-settings-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgb(20 28 40 / .16);
+        opacity: 0;
+        transition: opacity .25s ease;
+    }
+
+    .suka-settings-panel {
+        position: absolute;
+        right: 5.2rem;
+        bottom: 1.875rem;
+        width: min(19rem, calc(100vw - 2rem));
+        padding: .8rem 1rem 1rem;
+        color: #50596c;
+        background: rgb(255 255 255 / .94);
+        border: 1px solid rgb(255 255 255 / .72);
+        border-radius: .75rem;
+        box-shadow: 0 8px 28px rgb(0 0 0 / .22);
+        backdrop-filter: blur(14px);
+        transform: translateY(.75rem) scale(.97);
+        opacity: 0;
+        transition: opacity .25s ease, transform .25s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .suka-settings.is-open .suka-settings-backdrop {
+        opacity: 1;
+    }
+
+    .suka-settings.is-open .suka-settings-panel {
+        opacity: 1;
+        transform: none;
+    }
+
+    .suka-settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: .55rem;
+    }
+
+    .suka-settings-header h2 {
+        margin: 0;
+        font-size: .95rem;
+        font-weight: 600;
+    }
+
+    .suka-settings-close {
+        padding: 0 .25rem;
+        color: #667189;
+        font-size: 1.3rem;
+        line-height: 1;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .suka-setting-row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 2.2rem;
+        color: #596579;
+        font-size: .78rem;
+        cursor: pointer;
+    }
+
+    .suka-setting-row input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    .suka-setting-switch {
+        position: relative;
+        flex: 0 0 auto;
+        width: 2.25rem;
+        height: 1.25rem;
+        background: #c7ced8;
+        border-radius: 1rem;
+        transition: background .2s ease;
+    }
+
+    .suka-setting-switch::after {
+        position: absolute;
+        top: .15rem;
+        left: .15rem;
+        width: .95rem;
+        height: .95rem;
+        content: '';
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgb(0 0 0 / .22);
+        transition: transform .2s ease;
+    }
+
+    .suka-setting-row input:checked + .suka-setting-switch {
+        background: #3273dc;
+    }
+
+    .suka-setting-row input:checked + .suka-setting-switch::after {
+        transform: translateX(1rem);
+    }
+
+    .suka-setting-row input:focus-visible + .suka-setting-switch {
+        outline: 2px solid rgb(50 115 220 / .45);
+        outline-offset: 2px;
+    }
+
+    [data-theme="dark"] .suka-settings-backdrop {
+        background: rgb(0 0 0 / .45);
+    }
+
+    [data-theme="dark"] .suka-settings-panel {
+        color: var(--dm-text);
+        background: rgb(22 29 39 / .96);
+        border-color: var(--dm-border);
+    }
+
+    [data-theme="dark"] .suka-settings-close,
+    [data-theme="dark"] .suka-setting-row {
+        color: var(--dm-text-2);
+    }
+
+    @media (max-width: 640px) {
+        #RightDownBtn {
+            right: 0;
+            bottom: max(.75rem, env(safe-area-inset-bottom));
+            padding: .25rem .35rem .25rem .25rem;
+            border-radius: .75rem 0 0 .75rem;
+        }
+
+        #RightDownBtn > a,
+        #RightDownBtn > label {
+            width: 1.35em;
+            height: 1.35em;
+            margin: .25rem 0;
+        }
+
+        .suka-settings-panel {
+            right: .5rem;
+            bottom: max(.5rem, env(safe-area-inset-bottom));
+            left: .5rem;
+            width: auto;
+            border-radius: .9rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .suka-settings-backdrop,
+        .suka-settings-panel,
+        .suka-setting-switch,
+        .suka-setting-switch::after {
+            transition: none !important;
+        }
+    }
+
+    #RightDownBtn.is-visible > a:hover,
+    #RightDownBtn.is-visible > label:hover {
+        transform: scale(1.2);
+        transition-delay: 0s;
+        filter: drop-shadow(0 .25rem .375rem rgba(0, 0, 0, .35));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #RightDownBtn,
+        #RightDownBtn > a,
+        #RightDownBtn > label {
+            transition: none !important;
+        }
+    }
+
+    /* 工具栏内均为可点击锚点 (部分无 href), 统一指针与配色;
+       全站链接主色已移回 style.css 的 Global 段 */
+    #RightDownBtn a {
+        color: #3273dc;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+</style>
+
+<!-- right side bar.end -->
+<!-- 注: 此处原有一个带语法错误 (if () 空条件) 且从未生效的脚本块, 每次加载都会报
+     SyntaxError, 已移除; 浮动栏的显示/隐藏由上方 BackTOP() 的委托绑定处理。 -->
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<!-- ### PJAX (无刷新加载) ### -->
+
+<script>
+    window.SukaPjaxConfig = {"container":"#pjax-container","exclude":[],"timeout":10000,"cache":20,"transition":160,"prefetch":{"enable":true,"delay":150,"idle":true}};
+</script>
+<script src="/js/pjax.min.js?v=1.8.2"></script>
+
+
+<script>
+
+    
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2021;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka-bulie Theme (hexo-theme-suka-bulie) | fork of SukkaW/hexo-theme-suka | Verision 1.8.2 %c https://github.com/huntersxy/hexo-theme-suka-bulie \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+document.addEventListener('click', function (e) {
+    var card = e.target && e.target.closest ? e.target.closest('.post-entry') : null;
+    if (!card) return;
+    if (e.target.closest('a, button, input, select, label')) return;
+    var link = card.querySelector('a[rel="bookmark"], a.card-title');
+    if (link) link.click();
+}, true);
+
+if (window.matchMedia) {
+    var sukaSchemeMq = matchMedia('(prefers-color-scheme: dark)');
+    var sukaOnScheme = function (e) {
+        var chosen;
+        try { chosen = localStorage.getItem('suka-dark-mode'); } catch (err) {}
+        if (chosen === '1' || chosen === '0') return;
+        document.documentElement[e.matches ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+    };
+    if (sukaSchemeMq.addEventListener) sukaSchemeMq.addEventListener('change', sukaOnScheme);
+}
+
+</script>
+
+
+    <script src="https://fastly.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+
+
+    </body>
+
+</html>
+
+<!-- # 这是线条动画 # -->
+<script>
+(function () {
+    'use strict';
+
+    var canvas = null;
+    var context = null;
+    var points = [];
+    var cursor = { x: null, y: null, max: 20000 };
+    var width = 0;
+    var height = 0;
+    var frame = 0;
+    var running = false;
+    var raf = window.requestAnimationFrame || function (callback) { return window.setTimeout(callback, 1000 / 45); };
+    var caf = window.cancelAnimationFrame || window.clearTimeout;
+
+    function storedEnabled(name) {
+        try {
+            return localStorage.getItem('suka-setting-' + name) !== '0';
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function resize() {
+        if (!canvas) return;
+        width = canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        height = canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    }
+
+    function move(event) {
+        cursor.x = event.clientX;
+        cursor.y = event.clientY;
+    }
+
+    function leave() {
+        cursor.x = null;
+        cursor.y = null;
+    }
+
+    // 分桶批量绘制: 每帧把连线按透明度分到 BUCKETS 个桶, 每桶只设置一次
+    // strokeStyle/lineWidth 并用单一路径 stroke, 避免每条线拼 rgba 字符串
+    // (约千次/帧的字符串分配与状态切换) 造成的主线程与 GC 压力
+    var BUCKETS = 8;
+    var bucketStyles = [];
+    var bucketWidths = [];
+    var bucketSegs = [];
+    for (var b = 0; b < BUCKETS; b++) {
+        var midAlpha = (b + .5) / BUCKETS; // 桶中点的 opacity 近似值
+        bucketStyles.push('rgba(0,0,0,' + Math.min(1, midAlpha + .2).toFixed(3) + ')');
+        bucketWidths.push(midAlpha / 2);
+        bucketSegs.push([]);
+    }
+
+    function draw() {
+        if (!running || !context) return;
+        context.clearRect(0, 0, width, height);
+        for (var s = 0; s < BUCKETS; s++) bucketSegs[s].length = 0;
+        for (var i = 0; i < points.length; i++) {
+            var point = points[i];
+            point.x += point.xa;
+            point.y += point.ya;
+            point.xa *= point.x > width || point.x < 0 ? -1 : 1;
+            point.ya *= point.y > height || point.y < 0 ? -1 : 1;
+            context.fillRect(point.x - .5, point.y - .5, 1, 1);
+            for (var j = i + 1; j < points.length; j++) {
+                var target = points[j];
+                if (target.x === null || target.y === null) continue;
+                var dx = point.x - target.x;
+                var dy = point.y - target.y;
+                var distance = dx * dx + dy * dy;
+                if (distance >= target.max) continue;
+                if (target === cursor && distance >= target.max / 2) {
+                    point.x -= .03 * dx;
+                    point.y -= .03 * dy;
+                }
+                var opacity = (target.max - distance) / target.max;
+                var bucket = opacity >= 1 ? BUCKETS - 1 : (opacity * BUCKETS) | 0;
+                var segs = bucketSegs[bucket];
+                segs.push(point.x, point.y, target.x, target.y);
+            }
+        }
+        for (var k = 0; k < BUCKETS; k++) {
+            var seg = bucketSegs[k];
+            if (seg.length === 0) continue;
+            context.beginPath();
+            context.lineWidth = bucketWidths[k];
+            context.strokeStyle = bucketStyles[k];
+            for (var n = 0; n < seg.length; n += 4) {
+                context.moveTo(seg[n], seg[n + 1]);
+                context.lineTo(seg[n + 2], seg[n + 3]);
+            }
+            context.stroke();
+        }
+        frame = raf(draw);
+    }
+
+    function start() {
+        if (running) return;
+        running = true;
+        canvas = document.createElement('canvas');
+        canvas.id = 'suka-particles';
+        canvas.setAttribute('aria-hidden', 'true');
+        canvas.style.cssText = 'position:fixed;top:0;left:0;z-index:-1;opacity:.5;pointer-events:none;';
+        context = canvas.getContext('2d');
+        document.body.appendChild(canvas);
+        resize();
+        points = [];
+        // 点数随视口面积自适应: 手机约 24 点, 桌面满屏 50 点
+        // (连线判定是 O(n^2), 小屏跑满 50 点纯属浪费电)
+        var count = Math.max(24, Math.min(50, Math.round(width * height / 20000)));
+        for (var i = 0; i < count; i++) {
+            points.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                xa: 2 * Math.random() - 1,
+                ya: 2 * Math.random() - 1,
+                max: 6000
+            });
+        }
+        points.push(cursor);
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseout', leave);
+        frame = raf(draw);
+    }
+
+    function stop() {
+        running = false;
+        if (frame) caf(frame);
+        frame = 0;
+        window.removeEventListener('resize', resize);
+        window.removeEventListener('mousemove', move);
+        window.removeEventListener('mouseout', leave);
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        canvas = null;
+        context = null;
+        points = [];
+    }
+
+    window.SukaParticles = {
+        setEnabled: function (enabled) {
+            try { localStorage.setItem('suka-setting-particles', enabled ? '1' : '0'); } catch (e) {}
+            if (enabled) start(); else stop();
+        },
+        isEnabled: function () { return running; }
+    };
+
+    // 尊重系统"减少动态效果": 默认不自动启动 (设置面板手动开启仍可用)
+    var motionReduced = !!(window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    if (storedEnabled('particles') && !motionReduced) start();
+})();
+</script>
+<!-- # 这是天气 # -->
+<div id="tp-weather-widget"></div>
+<script>
+(function () {
+    'use strict';
+
+    var weatherConfig = {
+        flavor: 'bubble',
+        location: 'WKND5EK53SYX',
+        geolocation: true,
+        language: 'zh-Hans',
+        unit: 'c',
+        theme: 'auto',
+        token: 'c154a7e8-ec5d-49f8-b6a1-b1fb652e2534',
+        hover: 'enabled',
+        container: 'tp-weather-widget'
+    };
+    var loaded = false;
+
+    function enabledByDefault() {
+        try { return localStorage.getItem('suka-setting-weather') !== '0'; } catch (e) { return true; }
+    }
+
+    function show() {
+        if (typeof window.SeniverseWeatherWidget === 'function') {
+            window.SeniverseWeatherWidget('show', weatherConfig);
+        }
+    }
+
+    function load() {
+        if (loaded) { show(); return; }
+        loaded = true;
+        window.SeniverseWeatherWidgetObject = 'SeniverseWeatherWidget';
+        window.SeniverseWeatherWidget = window.SeniverseWeatherWidget || function () {
+            (window.SeniverseWeatherWidget.q = window.SeniverseWeatherWidget.q || []).push(arguments);
+        };
+        window.SeniverseWeatherWidget.l = +new Date();
+        var script = document.createElement('script');
+        script.src = '//cdn.sencdn.com/widget2/static/js/bundle.js?t=' + parseInt((new Date().getTime() / 100000000).toString(), 10);
+        script.charset = 'utf-8';
+        script.async = true;
+        script.onload = show;
+        document.head.appendChild(script);
+    }
+
+    window.SukaWeather = {
+        setEnabled: function (enabled) {
+            try { localStorage.setItem('suka-setting-weather', enabled ? '1' : '0'); } catch (e) {}
+            document.documentElement.classList.toggle('suka-weather-disabled', !enabled);
+            if (enabled) load();
+        },
+        isEnabled: function () { return !document.documentElement.classList.contains('suka-weather-disabled'); }
+    };
+
+    var enabled = enabledByDefault();
+    document.documentElement.classList.toggle('suka-weather-disabled', !enabled);
+    if (enabled) load();
+})();
+</script>
+
+

@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    
+    <!-- ### Dark Mode: 必须在样式表加载前执行, 避免亮色闪屏 ### -->
+    <meta name="color-scheme" content="light dark">
+    <script>
+        !function () {
+            try {
+                var s = localStorage.getItem('suka-dark-mode');
+                if (s === '1' || (s !== '0' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) { /* localStorage 不可用时跟随系统由 CSS 处理 */ }
+        }();
+    </script>
+    
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- avatar (文章卡片/文章页头像, 为外链时提前建连加速首图) -->
+
+    <link rel="preconnect" href="https://q.qlogo.cn">
+
+
+<!-- busuanzi -->
+
+    <link rel="preconnect" href="https://busuanzi.ibruce.info" crossorigin>
+
+
+<!-- comment -->
+
+
+
+
+
+    <link rel="preconnect" href="https://cdn-city.livere.com" crossorigin>
+    <link rel="preconnect" href="https://www.livere.org" crossorigin>
+
+
+
+<!-- analytics -->
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://fastly.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+
+    <!-- Title -->
+    <title>XProxy 开发记录：自研代理协议的机制、取舍与实测 | In Huntersxy</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;x-icon" href="/img/favicon/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png"><link rel="icon" type="image&#x2F;png" sizes="192x192" href="/img/favicon/favicon-192x192.png"><link rel="icon" type="image&#x2F;png" sizes="32x32" href="/img/favicon/favicon-32x32.png"><link rel="icon" type="image&#x2F;png" sizes="16x16" href="/img/favicon/favicon-16x16.png"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#e8b8c8"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f141b">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #0070ff;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #0070ff;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    .post-entry .card-body a {
+        color: #0070ff;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #0070ff;
+    }
+
+    .navbar-link:hover {
+        color: #0070ff;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+
+    
+    /* 卡片圆角 (首页卡片/文章卡片/画廊/友链等), 由 _config.yml 的 post_entry.radius 控制 */
+    body {
+        --card-radius: 10px;
+        --post-entry-raise: 6;
+    }
+    
+
+    
+    /* 来必力评论融入主题: 组件为 Shadow DOM, 通过 CSS 变量穿透定制 */
+    livere-comment {
+        --livere-primary: #0070ff;
+        --livere-bg: #f8f9fa;
+        --livere-line: #e5e7eb;
+        --livere-popup-line: #e5e7eb;
+        --background: #fff;
+        --border-color: #e5e7eb;
+        --input-border-color: #d5d9e0;
+        --input-font-color: #50596c;
+        --input-placeholder-color: #acb3c2;
+        --button-hover-background: #2b7fff;
+        --button-active-background: #0070ff;
+        --indicator-color: #0070ff;
+        --outline-color: #0070ff;
+        --category-font-color: #acb3c2;
+        --skintone-border-radius: .5rem;
+    }
+    
+</style><link rel="stylesheet" href="/css/style.min.css?v=1.8.2">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/css/highlight/github.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/css/highlight/github.min.css"></noscript>
+
+
+
+
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="In Huntersxy"><meta name="msapplication-starturl" content="https://blog.xiey.work"><meta name="msapplication-navbutton-color" content="#e8b8c8"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="In Huntersxy"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="/manifest.json">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="XProxy 开发记录：自研代理协议的机制、取舍与实测 | In Huntersxy"><meta property="og:site_name" content="In Huntersxy"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/"><meta property="og:locale" content="zh-CN"><meta name="description" content="XProxy 是一套自研代理协议的完整实现，仓库记录覆盖 2026-09-20 首个提交至 0.3.0 的全部 30 次提交。本文按开发顺序梳理各阶段解决的问题，并逐项说明协议机制、工程取舍、实测方法与未完成项。数据来源为仓库源码、设计文档、变更日志、抓包产物与提交历史；无法在观测范围内证实的结论在文中单独标注。 - Huntersxy - In Huntersxy"><meta name="keywords" content="代理协议, TLS, 反审查, 博客,Hexo,前端,折腾"><meta property="article:published_time" content="2026-09-25T17:33:00.000Z"><meta property="article:modified_time" content="2026-09-25T17:33:00.000Z"><meta property="og:updated_time" content="2026-09-25T17:33:00.000Z"><meta property="article:author" content="Huntersxy"><meta property="article:tag" content="代理协议, TLS, 反审查, 博客,Hexo,前端,折腾"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">
+
+    <meta name="generator" content="Hexo 8.1.2">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/",
+    "@type": "BlogPosting",
+    "logo": "https://blog.xiey.work/img/favicon/favicon-192x192.png",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/"
+    },
+    "headline": "XProxy 开发记录：自研代理协议的机制、取舍与实测 | In Huntersxy",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://blog.xiey.work/img/favicon/favicon-192x192.png"
+    },
+    
+    "datePublished": "2026-09-25T17:33:00.000Z",
+    "dateModified": "2026-09-25T17:33:00.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "Huntersxy",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://q.qlogo.cn/headimg_dl?dst_uin=1833505972&amp;spec=640&amp;img_type=jpg"
+        },
+        "description": "纸上得来终觉浅，绝知此事要躬行"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "In Huntersxy",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://blog.xiey.work/img/favicon/favicon-192x192.png"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://blog.xiey.work/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "代理协议, TLS, 反审查, 博客,Hexo,前端,折腾",
+    "description": "XProxy 是一套自研代理协议的完整实现，仓库记录覆盖 2026-09-20 首个提交至 0.3.0 的全部 30 次提交。本文按开发顺序梳理各阶段解决的问题，并逐项说明协议机制、工程取舍、实测方法与未完成项。数据来源为仓库源码、设计文档、变更日志、抓包产物与提交历史；无法在观测范围内证实的结论在文中单独标注。 - Huntersxy - In Huntersxy"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    <style>body:before{content:"";position:fixed;top:0;left:0;right:0;height:100vh;height:100lvh;z-index:-50;opacity:.5;pointer-events:none;background:linear-gradient(rgb(24 32 44 / .26), rgb(24 32 44 / .26)), url(/img/83adfc5c406b4999bb31341f45d5c51a.webp) center/cover;}</style><script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script><link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><script>if("serviceWorker" in navigator){var h=location.hostname;if(h!=="localhost"&&h!=="127.0.0.1"&&location.protocol!=="file:"){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}}</script>
+</head>
+
+    <body class="site-inner">
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/">In Huntersxy</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                纸上得来终觉浅，绝知此事要躬行
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/" class="navbar-link">首页</a>
+    
+    
+        <a href="/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags/" class="navbar-link">Tags</a>
+    
+        <a href="/gallery/" class="navbar-link">Gallery</a>
+    
+        <a href="/links/" class="navbar-link">Links</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=In Huntersxy&url=https://blog.xiey.work&pic=https://blog.xiey.work/img/favicon/favicon-192x192.png&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=In Huntersxy&url=https://blog.xiey.work&via=Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.xiey.work&title=画廊" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=In Huntersxy&title=画廊&summary=Huntersxy 的个人博客，记录技术折腾、折腾记录与生活点滴。&pics=https://blog.xiey.work/img/favicon/favicon-192x192.png&url=https://blog.xiey.work" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://blog.xiey.work&text=画廊" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAAAAAB0L9x7AAABhElEQVR42u3aQQ7CMAxE0d7/0rBhASi2x0mVTqvfDQK16UOyEtvJ8TK4DhAgQNwCcSTXzwOf79+/Z88o44LwRQyDZjBgGGB/98rjgrBG/AdO9zPDjMYF8QzEKNjCF4B4NGJ0T7ZggXgGIlpoMkCUAJ2+ioLYjsgGXvk8LdsGsRVRFq0CrArG5aocxFaEujhF9yvJTDihgbBFdAreLMnNglhewEBcjpgJqE4S1JoxQVggRoGjvFhtrqZBCsIekU0+ETB7SfXHQHgiykaG2BDJfpMWMBA2iCjQ1MZZ9nzZiAVhjaiapJ0AVgtmEN4IdUNWLYiXVlEQFgilUd45qKE020B4I5SJqVMcV41XEP6ImaDMNmGnV1EQdoipBpiQCEsHAEFYIDoTT5UQV8UUiHsgZg5mqIVStakDwhehTEDKQdDudxDeCPUAoFpIL1VgIOwR6qGd5Z0fELdBVIMrTfhhMx6ENUIJsu6GXZkEg7BFqAcvss25qtGylG2D2Iq48gIBAoQ14g0If1joBXOTDgAAAABJRU5ErkJggg==" alr="QRCode" loading="lazy" decoding="async">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+        <a href="/atom.xml" target="_blank" class="navbar-link">RSS</a>
+    
+</nav>
+</header>
+
+
+            <!-- # PJAX 无刷新加载容器 (与 _config.yml 的 pjax.container 对应) # -->
+            <div id="pjax-container">
+                
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">XProxy 开发记录：自研代理协议的机制、取舍与实测</h1>
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb" src="https://q.qlogo.cn/headimg_dl?dst_uin=1833505972&amp;spec=640&amp;img_type=jpg" loading="lazy" decoding="async" alt="Huntersxy's Avatar">
+        <span>2026-09-26</span>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=XProxy 开发记录：自研代理协议的机制、取舍与实测&url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/&pic=https://blog.xiey.work/img/favicon/favicon-192x192.png&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=XProxy 开发记录：自研代理协议的机制、取舍与实测&url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/&via=Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/&title=In Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=In Huntersxy&title=In Huntersxy&summary=Huntersxy 的个人博客，记录技术折腾、折腾记录与生活点滴。&pics=https://blog.xiey.work/img/favicon/favicon-192x192.png&url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/&text=In Huntersxy" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACQUlEQVR42u3bwY7DIAyE4bz/S7OXPfSAPTNJq+3iP5eqUUK+SIUaY671D44LJEiQIL8AeTXH6zXbRn7P7+5LvpfPBTkW2QE6kAt+PZ88F+Rs5O6HnQKd9naf5XNBgmyQ1feqo1TXRc8FCdJAOoO2CjpAgnSQXUCbBh0K/vYoCORxyG5C9MnPt80WQR6FtJNHxuR+12mq+z+SVQN5BNIddJMgomq7axMkyGqSVQUSKljt7u86YvtiIEci3cm/ExB359PEFci5yOpiNXA/AbkDOsiZSGdC1iVIVYDStS3bAzkW6QanaaLVndSVfxogxyLdQflOYKv+NNoBH+RYZHeDwnfJKbVAGgUYIMcgqySVChKSzvG2gjqQI5DWD1h0IKcTqgLR7XNAjkY6CU57Md1IylqL+SDHItUikFrsVIkA9ZwyYQByPNJNqqpO4iaoZIcDORKpijcUepmbL5yFfFlhBXIEcgVFwgneLaa3ijxBjkKqiZNTAOokYVWSyxrMQY5FusWYbgLKfUGrOhrk8ci0uDhJujoBS1Q5AHIEMtlAkRTRrWCzULTbDuTxyGVs8EkLQt1NSDL5D3IkUg3g6ST/SULrVtAL8jikW4D0tKBTFXfGK2Igj0VaBRtG4adbVBclukCORboTJqcjqMDEmYCBBLnMQneV+L/CTZmyQA8kSGOw7RaMnMJkt6gEJMgk8X4Fm4NVYV27UApyNNJt0CmEvx5sWr8VBYE8Dnkn6ekkpboXuL1KC/J45DcfIEGCBPmHxw+cEXbV8PFpYwAAAABJRU5ErkJggg==" alt="QRCode" loading="lazy" decoding="async">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%A6%82%E5%86%B5"><span class="post-toc-number">1.</span> <span class="post-toc-text">项目概况</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%BC%80%E5%8F%91%E6%97%B6%E9%97%B4%E7%BA%BF"><span class="post-toc-number">2.</span> <span class="post-toc-text">开发时间线</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%A8%81%E8%83%81%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="post-toc-number">3.</span> <span class="post-toc-text">威胁模型与设计原则</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%8F%E8%AE%AE%E6%9C%BA%E5%88%B6"><span class="post-toc-number">4.</span> <span class="post-toc-text">协议机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E8%AE%A4%E8%AF%81%E6%8F%A1%E6%89%8B%EF%BC%9A%E6%97%A0%E5%9B%BA%E5%AE%9A%E5%89%8D%E7%BC%80%E4%B8%8E%E6%85%A2%E5%93%88%E5%B8%8C%E5%8F%A3%E4%BB%A4%E6%B4%BE%E7%94%9F"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">认证握手：无固定前缀与慢哈希口令派生</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%A4%96%E5%B1%82%E6%8C%87%E7%BA%B9%EF%BC%9A%E8%AE%A9%E9%9A%A7%E9%81%93%E8%BF%9E%E6%8E%A5%E9%95%BF%E5%BE%97%E5%83%8F%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">外层指纹：让隧道连接长得像浏览器</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E9%95%BF%E5%BA%A6%E5%8E%BB%E7%9B%B8%E5%85%B3%EF%BC%9A%E6%8C%89%E5%B8%A7%E7%B1%BB%E5%9E%8B%E5%8C%BA%E5%88%86%E5%A1%AB%E5%85%85"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">长度去相关：按帧类型区分填充</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E8%B7%A8%E5%B1%82%E6%97%B6%E5%BA%8F%EF%BC%9A%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8D%B3%E6%97%B6%E5%BE%AE%E5%BA%94%E7%AD%94"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">跨层时序：服务端即时微应答</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E8%BF%9E%E6%8E%A5%E5%BD%A2%E6%80%81%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%A2%E7%8A%B6%E7%9A%84%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">连接形态：浏览器形状的连接池</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%B8%BB%E5%8A%A8%E6%8E%A2%E6%B5%8B%EF%BC%9Atrojan-%E5%BC%8F%E5%9B%9E%E9%80%80"><span class="post-toc-number">4.6.</span> <span class="post-toc-text">主动探测：trojan 式回退</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%8F%AF%E9%80%89%E8%B7%AF%E5%BE%84%EF%BC%9AClientHello-%E8%AE%B0%E5%BD%95%E5%88%86%E7%89%87"><span class="post-toc-number">4.7.</span> <span class="post-toc-text">可选路径：ClientHello 记录分片</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%A4%9A%E8%B7%B3%E9%93%BE%E8%B7%AF"><span class="post-toc-number">4.8.</span> <span class="post-toc-text">多跳链路</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E6%8E%A7%E5%88%B6%E9%9D%A2%E5%A4%8D%E7%94%A8%E6%97%A2%E6%9C%89%E9%9A%A7%E9%81%93"><span class="post-toc-number">4.9.</span> <span class="post-toc-text">控制面复用既有隧道</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5"><span class="post-toc-number">5.</span> <span class="post-toc-text">工程实践</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%AE%9E%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="post-toc-number">6.</span> <span class="post-toc-text">实测方法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E8%8C%83%E5%9B%B4%E8%BE%B9%E7%95%8C%E4%B8%8E%E6%97%A2%E6%9C%89%E7%BB%93%E8%AE%BA"><span class="post-toc-number">7.</span> <span class="post-toc-text">范围边界与既有结论</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%9C%AA%E5%AE%8C%E6%88%90%E9%A1%B9"><span class="post-toc-number">8.</span> <span class="post-toc-text">未完成项</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="post-toc-number">9.</span> <span class="post-toc-text">小结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="post-toc-number">10.</span> <span class="post-toc-text">参考文献</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <p>XProxy 是一套自研代理协议的完整实现，仓库记录覆盖 2026-09-20 首个提交至 0.3.0 的全部 30 次提交。本文按开发顺序梳理各阶段解决的问题，并逐项说明协议机制、工程取舍、实测方法与未完成项。数据来源为仓库源码、设计文档、变更日志、抓包产物与提交历史；无法在观测范围内证实的结论在文中单独标注。</p>
+<span id="more"></span>
+
+<h2 id="项目概况"><a href="#项目概况" class="headerlink" title="项目概况"></a>项目概况</h2><p>客户端在本机提供 SOCKS5 入口，流量经 TLS&#x2F;WebSocket 隧道到达服务端，由服务端代为访问目标站。隧道外层复用真实域名与证书，与同端口上的普通 HTTPS 站点共存。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>协议核心</td>
+<td>Go 模块：协议核心、客户端库、服务端、命令行客户端</td>
+</tr>
+<tr>
+<td>桌面客户端</td>
+<td>Wails v2 + Vue 3，内嵌同一份客户端库</td>
+</tr>
+<tr>
+<td>浏览器扩展</td>
+<td>Chrome&#x2F;Edge MV3，管理浏览器代理模式</td>
+</tr>
+<tr>
+<td>部署示例</td>
+<td>nginx 片段、systemd 单元、配置样例</td>
+</tr>
+<tr>
+<td>本地联调</td>
+<td>自签名证书</td>
+</tr>
+</tbody></table>
+<p>桌面客户端与命令行客户端共用 <code>pkg/client</code>，是同一实现的两个入口。仓库规模统计（2026-09-25）：</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>提交</td>
+<td>30</td>
+</tr>
+<tr>
+<td>时间跨度</td>
+<td>2026-09-20 21:01 → 2026-09-25 01:10</td>
+</tr>
+<tr>
+<td>生产 Go 文件</td>
+<td>26 个 &#x2F; 6990 行</td>
+</tr>
+<tr>
+<td>测试文件</td>
+<td>29 个 &#x2F; 5399 行</td>
+</tr>
+<tr>
+<td>测试函数</td>
+<td>136</td>
+</tr>
+<tr>
+<td>当前版本</td>
+<td>0.3.0</td>
+</tr>
+</tbody></table>
+<p>协议核心的包划分：</p>
+<table>
+<thead>
+<tr>
+<th>包</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>internal/crypto</code></td>
+<td>认证握手、密钥派生、AEAD 记录层</td>
+</tr>
+<tr>
+<td><code>internal/mux</code></td>
+<td>隧道上的流多路复用</td>
+</tr>
+<tr>
+<td><code>internal/tunnel</code></td>
+<td>单条隧道的建立、认证、复用与关闭</td>
+</tr>
+<tr>
+<td><code>pkg/client</code></td>
+<td>SOCKS5 服务、隧道保活与重连</td>
+</tr>
+<tr>
+<td><code>server</code></td>
+<td>服务端</td>
+</tr>
+</tbody></table>
+<h2 id="开发时间线"><a href="#开发时间线" class="headerlink" title="开发时间线"></a>开发时间线</h2><p>提交历史集中在六个日历日内，按主题可分为五个阶段。</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>提交</th>
+<th>主题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09-20</td>
+<td>10</td>
+<td>首个提交：客户端&#x2F;服务端、多节点与订阅管理；随后补齐多服务器、局域网代理、系统代理开关</td>
+</tr>
+<tr>
+<td>09-22</td>
+<td>3</td>
+<td>协议里程碑：头认证 + trojan 式回退、uTLS 浏览器指纹、带轮换的连接池、抖动心跳、记录填充；服务端即时微应答</td>
+</tr>
+<tr>
+<td>09-23</td>
+<td>9</td>
+<td>GUI 对齐同类工具的界面组织；外层 hello 对齐 Chrome 主版本；可选 ClientHello 记录分片；WS 路径自动随机</td>
+</tr>
+<tr>
+<td>09-24</td>
+<td>5</td>
+<td>多跳链路、系统托盘常驻、KDF 换 argon2id、发布流程（CI &#x2F; 变更日志 &#x2F; 版本烧录）、凭据清理</td>
+</tr>
+<tr>
+<td>09-25</td>
+<td>3</td>
+<td>服务器 I&#x2F;O 归因采样工具；运维与设计文档</td>
+</tr>
+</tbody></table>
+<p>首个提交即包含 mihomo 多节点与订阅管理，说明服务端的出口管理在协议成型之前就已存在。09-22 的提交是结构转折点：认证方式、外层指纹、连接形态三件事在同一天定型，此后的改动多为可选项与工程化收尾。09-24 之后不再出现协议层改动，提交转向发布流程与运维可观测性。</p>
+<h2 id="威胁模型与设计原则"><a href="#威胁模型与设计原则" class="headerlink" title="威胁模型与设计原则"></a>威胁模型与设计原则</h2><p>设计文档为每类对手明确「能看到什么」，不做绝对不可检测的声称。</p>
+<table>
+<thead>
+<tr>
+<th>对手</th>
+<th>能看到</th>
+<th>看不到</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>被动监听者</td>
+<td>IP 层元数据、流量总量、通信时间、服务端地址；TLS 层仅密文与握手包长</td>
+<td>内容、目标域名、应用层协议</td>
+</tr>
+<tr>
+<td>流量统计分析者</td>
+<td>包长序列、时序相关性、方向性、连接创建频率与时长</td>
+<td>无法可靠区分隧道与普通加密流量</td>
+</tr>
+<tr>
+<td>主动探测者</td>
+<td>对 443 端口做 TLS 握手或非授权访问</td>
+<td>认证后才有意义；未授权只得到普通 HTTPS 站点行为</td>
+</tr>
+<tr>
+<td>被攻陷的中间跳</td>
+<td>只能看到密文流</td>
+<td>内容与目标</td>
+</tr>
+<tr>
+<td>被攻陷的出口节点</td>
+<td>面向目标站的明文、入口转发的源 IP</td>
+<td>无法伪造客户端身份</td>
+</tr>
+</tbody></table>
+<p>理论上无法隐藏的量为：客户端 IP、服务端 IP、流量总量、大致通信时间。设计目标不是藏住这些，而是在此之上最小化其余可解出的信息。由此导出四条通用原则：</p>
+<ul>
+<li><strong>最小固定特征</strong>：客户端之间行为一致，不产生一眼可辨的固定字节模式。</li>
+<li><strong>标准优先</strong>：承载走成熟标准，自定义机制仅在标准无法满足时设计，且不发明加密算法。</li>
+<li><strong>通用性</strong>：不针对具体设备或产品制定规避规则，只做通用、可重复测试的设计。</li>
+<li><strong>可验证</strong>：用可测指标衡量，不玄学。</li>
+</ul>
+<h2 id="协议机制"><a href="#协议机制" class="headerlink" title="协议机制"></a>协议机制</h2><p>以下按「要解决的问题」组织，每项给出机制与可验证的观测结果。</p>
+<h3 id="认证握手：无固定前缀与慢哈希口令派生"><a href="#认证握手：无固定前缀与慢哈希口令派生" class="headerlink" title="认证握手：无固定前缀与慢哈希口令派生"></a>认证握手：无固定前缀与慢哈希口令派生</h3><p>握手不使用任何固定前缀。客户端问候为 48 字节，前 16 字节是随机盐，后 32 字节是 HMAC-SHA256 标签，密钥由共享口令与该次连接的盐派生。服务端应答同为 48 字节，标签把两个盐绑定在一起，客户端据此确认对端持有同一口令。每个帧整体形如随机字节，被动观察者无法从握手区分该协议与任意加密噪声。</p>
+<p>不持正确口令的一方得不到任何可区分的响应：服务端直接关闭连接，没有协议专属错误信息。常量时间比较用于标签校验。</p>
+<p>口令到主密钥的派生在 0.3.0 起换为 argon2id，参数取 OWASP 推荐下限（t&#x3D;2、19 MiB、p&#x3D;1）[3]。握手字节布局未变，仅派生结果改变，因此抓包后离线猜口令的成本被抬高。代价是派生的计算开销不再可忽略：两条问候加头部认证路径每次连接会跑若干次，实现注释明确该成本须能在小内存低配机器上保持舒适。</p>
+<p>参数属协议的一部分：双方必须同版本升级，否则表现为认证失败而无专用错误码。</p>
+<p>会话密钥由 HKDF 从主密钥派生，盐取两个握手盐的 HMAC，每条连接独立，因此记录层计数器不会跨连接复用。</p>
+<h3 id="外层指纹：让隧道连接长得像浏览器"><a href="#外层指纹：让隧道连接长得像浏览器" class="headerlink" title="外层指纹：让隧道连接长得像浏览器"></a>外层指纹：让隧道连接长得像浏览器</h3><p>Go 标准库的 ClientHello 具有稳定且独特的指纹，会把全部连接聚成「一个 Go 程序的 TLS」，与内层协议是否干净无关。该项目的应对是外层使用 uTLS[4] 的浏览器预设，SNI 指向真实站点，使证书与 SNI 校验与普通访客一致。</p>
+<p>预设冻结在上游某个 Chrome 主版本，而上游在观测期内未更新预设。09-23 的提交在既有握手构造流程上做手工对齐，未更换依赖，只用其公开 API：</p>
+<ul>
+<li>签名算法列表补足到目标主版本的项数与顺序，头位填充每拨现抽的 GREASE 值；</li>
+<li>补入后量子签名算法项（该 utls 版本无常量，按裸值写入）；</li>
+<li>剔除仅页面握手才出现的扩展；</li>
+<li>追加目标浏览器 wss 连接特有的未知扩展，载荷按抓包反推的文法生成，成员集合逐字节等于真值；</li>
+<li>UA 同步到外层所演的主版本。</li>
+</ul>
+<p>ALPN 固定为 <code>http/1.1</code>。这一项一度被误判为偏离：真实 Chrome 的页面加载会协商 h2，但对 wss 连接只提供 <code>http/1.1</code>[8]。抓包真值证实两者是两类连接、两套 ALPN，固定为 <code>http/1.1</code> 正是真实形态。后量子曲线与密套件列表的逐字段比对结果见下文实测一节。</p>
+<p>改动的验证方式是逐字段 diff：密套件 15 项逐字相同、<code>supported_groups</code> 与 <code>key_share</code> 含后量子项且长度一致、扩展顺序每连接随机（与 Chrome 同款行为）、非 GREASE 扩展集与真值的对称差为空、ALPN 仅 <code>http/1.1</code>。握手成功率 3&#x2F;3。</p>
+<p>会话恢复（PSK）被依赖缺陷阻塞：utls 该版本存票与取回均正常，但出价侧零物化，纯 Go 基线同样失败（属上游问题，非本项目流程）。处置是保留客户端会话缓存并给两个恢复测试打跳过桩，待依赖升级后原地重开。</p>
+<h3 id="长度去相关：按帧类型区分填充"><a href="#长度去相关：按帧类型区分填充" class="headerlink" title="长度去相关：按帧类型区分填充"></a>长度去相关：按帧类型区分填充</h3><p>记录层为 <code>[长度:2][密文]</code>，AES-256-GCM[1]，nonce 由方向标签与单调计数器构成，明文前置随机填充以模糊真实长度。</p>
+<p>填充策略按帧类型区分：数据帧的长度否则会镜像被隧传协议自身的记录尺寸，从而支持已发表的长度关联攻击，因此数据帧在较宽区间内均匀填充；控制帧体积小且频繁，保留较小上限，避免填充在记账流量上变成纯带宽开销。</p>
+<p>两个实现细节值得记录：</p>
+<ul>
+<li><strong>判型字节位置</strong>。帧的线格式为 <code>[流ID:2][操作:1][长度:2][载荷]</code>，操作字节位于 <code>body[2]</code>。早期实现按 <code>body[0]</code> 判型，而 <code>body[0]</code> 是流 ID 高字节（前 256 个 ID 时恒为 0），导致真实数据帧全被误判为控制帧，宽区间填充在生产上长期失效。该缺陷随 09-22 的提交修复。</li>
+<li><strong>随机源宽度</strong>。填充长度早期由单字节随机值抽取，任何超过 256 的区间都会塌缩到前 256 个值。改为 4 字节抽取后区间才真正均匀。</li>
+</ul>
+<p>填充带来的带宽开销在开发记录中记为约 +6%，属项目自带估计值，未在本文复现测量。</p>
+<h3 id="跨层时序：服务端即时微应答"><a href="#跨层时序：服务端即时微应答" class="headerlink" title="跨层时序：服务端即时微应答"></a>跨层时序：服务端即时微应答</h3><p>跨层 RTT 的差异是可被检测的侧信道[6]：代理会话的两层错位会让延迟残差额外包含代理到源站的整段距离，与直连的毫秒级处理时延可区分。</p>
+<p>该项目的对策是服务端对每个客户端帧立即回一帧确认，把跨层时序关联的互相关峰钉在 1×RTT，与直连服务器的响应形态一致。开发记录中的 A&#x2F;B 结果是：检测器的超阈占比由 14–75% 降到 0–1%。该数据引用自项目自身的 A&#x2F;B 记录，本文未独立复现。</p>
+<p>兼容性上，路由分发没有默认分支，不支持该特性的旧端会静默忽略确认帧，因此新旧端点可混跑。</p>
+<h3 id="连接形态：浏览器形状的连接池"><a href="#连接形态：浏览器形状的连接池" class="headerlink" title="连接形态：浏览器形状的连接池"></a>连接形态：浏览器形状的连接池</h3><p>单条隧道上的多路复用让一次握手加一次认证覆盖全部流。这同时改善两件事：握手开销不再随连接数增长；「每打开一个页面就发起完整 TLS 握手」这类本身即为显著固定特征的行为不再出现。</p>
+<p>代价是单条隧道成为带宽瓶颈，且中断会同时影响在途流。实现以连接池分摊：默认 3 条（浏览器通常对单个源保持 2–4 条），新流按最省负载分发，池内最老的连接按周期排空轮换，活跃流归零才真正关闭——慢速传输会顺延本轮而非被强杀。轮换周期默认 15 分钟并带 ±30% 抖动，同一时刻只允许一条连接处于排空状态，否则快速轮换与长排空叠加会把服务集合抽干（该情形由测试捕获）。</p>
+<p>心跳为 WebSocket ping 帧[2]，基础间隔带 ±1&#x2F;3 抖动且每周期重抽，仅在空闲达到一个间隔时才发送。断开后重连按倍增减退至上限。</p>
+<p><code>pool_size</code> 与轮换周期均可配，负值分别表示单连接回退形态与禁用轮换，用于快速回退。多路复用的流 ID 为 16 位且只增不回收——回收会让迟到帧被投递到复用了同一 ID 的新流。ID 空间用尽不是错误，而是触发静默轮换：连接按排空流程处理，池补入新连接，开流撞到该状态时在同一次调用内换连接重试，用户侧无感。已耗尽的连接对新流 fail-closed，绝不在没有分配器的多路复用器上继续开流。</p>
+<h3 id="主动探测：trojan-式回退"><a href="#主动探测：trojan-式回退" class="headerlink" title="主动探测：trojan 式回退"></a>主动探测：trojan 式回退</h3><p>未通过认证的连接不会得到任何协议相关响应。配置了回退地址时，服务端按 trojan[5] 的方式把请求反代到同端口上的真实网站——这是主动探测场景下的事实标准：扫描器看到的只是一个能正常工作的站点。真站不可达时返回与 nginx 逐字节一致的 502 页面，含 <code>Server: nginx</code> 与标准错误页正文；裸 502 与真站故障的形态不同，会成为判据，因此不一致本身就是缺陷。</p>
+<p>认证凭证在 WebSocket 升级请求中以标准 <code>Authorization</code> 头承载，服务端标签在 101 响应头回传。由此握手帧不出现在 WebSocket 流内，线上第一条消息已是变长 AEAD 记录；且该头在真实 WebSocket 端点上普遍存在，本身不构成信号。两端凭据尾部各附加随机字节，使令牌长度不成为固定特征，校验只读前 48 字节，因此新旧端点混跑无恙。</p>
+<h3 id="可选路径：ClientHello-记录分片"><a href="#可选路径：ClientHello-记录分片" class="headerlink" title="可选路径：ClientHello 记录分片"></a>可选路径：ClientHello 记录分片</h3><p>首条 ClientHello 记录可拆成两条 TLS 记录，切点落在 SNI 主机名内部，使任何单条记录都不含完整主机名。依据是审查设备重组 TCP 流但不按 TLS 记录边界重组：项目对某自建入口的对照测量为 TCP 段级分段 0&#x2F;9 无效、记录级分片 5&#x2F;5 可握手，同一 IP 上良性 SNI 正常。服务端按 RFC 8446[1] 重组跨记录握手消息，零服务端改动。</p>
+<p>该选项按服务器单独开关，默认关闭。理由是真实 Chrome 从不分片其 ClientHello，分片后的首记录本身即偏离浏览器发出的原子记录形态；在健康入口上启用会拿可用连接换更高的可检测性，因此只对 SNI 正被掐断的入口启用。实现为 fail-open：仅首条 write 尝试分片，解析失败或主机名过短时原样放行，绝不破坏流。</p>
+<p>同一思路不具普适性：开发记录中对某类通配域名测试的 15 种变体全部失败，说明该名单另有更强规则或独立匹配路径。</p>
+<h3 id="多跳链路"><a href="#多跳链路" class="headerlink" title="多跳链路"></a>多跳链路</h3><p>客户端可将 2 至 5 台服务器组成链。机制是端到端嵌套（ProxyJump 式）：每一跳在到下一跳的多路复用流上完整运行 TLS、WebSocket 与认证握手，因此中间跳既看不到最终目标，也看不到下一跳的凭据。服务端零改动——承载连接由客户端侧提供即可。</p>
+<p>整条链在池中表现为一条连接，因此轮换、最省负载分发、排空语义全部照旧工作。关闭采用逐层放附件的后进先出顺序，断一层则全链收拢。每跳各用各的节点设置，分片等选项互不影响。开发记录中每层带宽开销记为约 +6%，属项目自带估计值。</p>
+<p>配置层面，链与单服务器并列，存量配置零迁移；被链引用的服务器拒绝删除并点名校验失败原因。</p>
+<h3 id="控制面复用既有隧道"><a href="#控制面复用既有隧道" class="headerlink" title="控制面复用既有隧道"></a>控制面复用既有隧道</h3><p>服务端出口管理（切换节点、测速、替换订阅）复用同一条已认证隧道：每次调用开一条逻辑流，目标地址使用保留的 <code>.invalid</code> 顶级域地址，与代理连接区分；无需额外监听，也不需要第二套口令。请求为定长长度前缀加 JSON，因此线格式可扩展而不破坏旧客户端。</p>
+<p>订阅替换会拉取远端文件并重载出口，因此保留本机规则、DNS、TUN 与端口设置，仅替换节点与分组，更新前备份、任一步失败自动回滚。服务端未配置控制器时，相关功能对客户端返回明确提示。</p>
+<h2 id="工程实践"><a href="#工程实践" class="headerlink" title="工程实践"></a>工程实践</h2><p><strong>发布流程</strong>。版本号由构建脚本通过链接期变量烧入两端二进制。CI 分两个任务[7]：协议模块在 Linux 上跑 <code>go vet</code> 与带竞态检测的测试；桌面客户端模块在 Windows 上先构建前端产物（主程序以 embed 方式内嵌该产物）再跑检查。本机无 gcc 无法运行竞态检测，竞态覆盖全部依赖 CI 这一条路径。测试规模为 29 个文件、136 个测试函数、5399 行。定向测试采用先编译再指定用例运行的方式，避免测试管道占用标准输入导致阻塞。</p>
+<p><strong>凭据清理</strong>。某份抓包配置曾把线上口令以明文带入提交历史。处置为：移出版本控制并加入忽略清单，保留本地副本供工具链使用；服务端轮换该口令；重写全部提交历史抹除该内容，重写前留存全量备份于仓库之外。这一项属流程缺陷而非编码缺陷——忽略清单的建立晚于首次提交。</p>
+<p><strong>一次未定根因的故障</strong>。某台小内存服务器（约 400 MB 内存且当时无交换分区）出现磁盘读速率约每秒 1500 次并渐进死机，表现为服务管理组件超时、随后日志断流，需从面板重启。按项目记录，已排除内存耗尽、坏盘、日志洪泛、核心转储与元数据预缓存；观测窗口内唯一的 I&#x2F;O 活动方是一个云厂商安全组件，但仅为嫌疑、无实证。<strong>根因至今未定位</strong>，处置是加装 1 GB 交换分区并调低交换倾向作为保命阀，同时部署每秒一次的进程级 I&#x2F;O 归因采样器，把时间戳空窗本身作为系统停滞时长的证据。该故障的因果归属属未证实项。</p>
+<p><strong>图形界面的取舍</strong>。GUI 目标是对齐同类工具的界面组织，包括仪表盘、节点、服务器、连接、日志、设置六个页面与主题切换。托盘常驻用 Wails v2 在 Windows 上不支持托盘 API，因此直接调用系统库手写：独立线程跑消息循环、调用通知区 API、内嵌位图转图标，零新增依赖。托盘图标首次实现全透明——位图创建 API 的像素指针为出参，原实现写入了错误目标；修复后以读回像素的回归测试锁定。非 Windows 平台走空实现，关窗即退出。</p>
+<h2 id="实测方法"><a href="#实测方法" class="headerlink" title="实测方法"></a>实测方法</h2><p>协议伪装的有效性无法靠推理确认，需要与真实浏览器对照。项目建立了一套抓包对照流程：以独立 profile 冷启动真实浏览器，用密钥日志配合抓包工具解密，分别采集直连腿与走代理腿，再逐字段 diff。</p>
+<p>一次对照的结论（目标为某自建入口与一个公共站点）：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>直连</th>
+<th>走代理</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>连接建立</td>
+<td>每个目标独立直拨出网</td>
+<td>每个目标一条明文 CONNECT 落本机，TLS 在隧道内；出网仅剩隧道连接</td>
+<td>结构性差异</td>
+</tr>
+<tr>
+<td>ClientHello 指纹</td>
+<td>逐字段</td>
+<td>相同</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>后量子曲线与密钥共享</td>
+<td>含</td>
+<td>相同</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>扩展顺序</td>
+<td>每连接随机</td>
+<td>每连接随机，集合恒同</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>ALPN 协商结果</td>
+<td>服务端决定</td>
+<td>相同</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>HTTP 请求头顺序与取值</td>
+<td>逐字</td>
+<td>逐字一致</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>出网 TCP SYN 指纹</td>
+<td>本机内核栈</td>
+<td>同机同栈</td>
+<td>无差异</td>
+</tr>
+<tr>
+<td>目标侧观察</td>
+<td>源 IP 为家宽 IP</td>
+<td>源 IP 为服务端；浏览器 TLS 端到端穿隧</td>
+<td>核心差异</td>
+</tr>
+</tbody></table>
+<p>结论：除代理腿多出的明文 CONNECT 前导，以及目标侧看到的源 IP 与外层连接形态之外，浏览器自身的 TLS 指纹、ALPN 结果、HTTP 头顺序与取值、内核 TCP 指纹两腿完全一致。</p>
+<p><strong>一次数据作废的教训</strong>。第一轮对照数据整体无效：本机安全软件启用了加密连接扫描，对所有浏览器 TLS 做中间人中转，上线的是安全软件的 TLS 栈而非浏览器自身的。三条判据同时成立——真实浏览器必带的后量子曲线在抓包中恒定缺失；浏览器写出的密钥日志与抓包中的随机数零交集；全部目标（含自有服务器与公共站点）的指纹统一为同一套中转栈指纹。退出该软件后复测，密钥日志 11&#x2F;11 命中，后量子项与 GREASE 正常出现。结论：本机任何浏览器 TLS 指纹采集都须先退出该类软件，或把目标域名加入排除项。</p>
+<p>这一轮作废同时说明：只看单条连接的指纹不足以判断，跨目标的指纹一致性是更早暴露问题的信号。</p>
+<h2 id="范围边界与既有结论"><a href="#范围边界与既有结论" class="headerlink" title="范围边界与既有结论"></a>范围边界与既有结论</h2><p>以下为项目已明确的范围判决，记录结论与依据。</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>结论</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>交互式会话恢复（PSK）</td>
+<td>被上游依赖缺陷阻塞，保留惰性缓存与跳过桩</td>
+<td>纯 Go 基线同样失败，属上游问题</td>
+</tr>
+<tr>
+<td>明文元数据（ALPN 补 h2）</td>
+<td>不做</td>
+<td>真实浏览器的 wss 连接本就只提供 <code>http/1.1</code>[8]</td>
+</tr>
+<tr>
+<td>前端框架固定路径</td>
+<td>不再手动配置，每次拨号随机生成</td>
+<td>固定路径是跨部署的静态特征；服务端与路径无关</td>
+</tr>
+<tr>
+<td>UDP 关联</td>
+<td>范围外</td>
+<td>主功能是系统代理通道，UDP 从操作系统层即直连，属正常背景流量</td>
+</tr>
+<tr>
+<td>伪包干扰</td>
+<td>不做</td>
+<td>收益不确定，纯噪声且增加排障成本</td>
+</tr>
+<tr>
+<td>HTTP&#x2F;2 传输模式</td>
+<td>备胎，暂不实现</td>
+<td>仅在 WebSocket 被针对性降速或指纹化时再评估</td>
+</tr>
+<tr>
+<td>长短连接分离</td>
+<td>否决</td>
+<td>按请求建连会使握手率反超真实浏览器并劣化延迟，连接池是折中终点</td>
+</tr>
+<tr>
+<td>对抗具体审查设备</td>
+<td>不做</td>
+<td>只做通用、可重复测试的设计</td>
+</tr>
+</tbody></table>
+<p>明确的能力缺口：无连接迁移，隧道重连后已建立的流不会恢复。</p>
+<h2 id="未完成项"><a href="#未完成项" class="headerlink" title="未完成项"></a>未完成项</h2><p>设计文档给出的演进路线中，以下为未落地部分：</p>
+<ul>
+<li>密钥轮换、版本协商、能力协商与向后兼容。当前两端必须同版本，任一端未升级即表现为握手失败。</li>
+<li>基于 QUIC 与 MASQUE 的承载评估，以及 UDP 承载。</li>
+<li>连接迁移与双栈。</li>
+<li>可测指标体系：包长分布、时序相关与指纹差异的常态化测量。当前对照流程为一次性手工执行。</li>
+</ul>
+<p>当前已完成项包括 TLS 1.3 承载、强共享密钥认证、帧填充与多路复用、抗主动探测回退、仅使用标准加密套件、连接池与心跳、流 ID 不复用、多跳链路。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>六天、30 次提交、6990 行生产代码与 5399 行测试，构成一套可部署的代理协议实现。结构上值得记录的三点：认证与承载在外层标准协议内完成，服务端在多数改动中零修改；抗检测手段全部落在时序、长度与指纹层，而非发明加密算法；每项机制都配有可复现的对照测量，无法证实的一律标注为未证实——包括那台至今根因未明的服务器故障。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3. <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a></p>
+<p>[2] RFC 6455, The WebSocket Protocol. <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc6455">https://www.rfc-editor.org/rfc/rfc6455</a></p>
+<p>[3] OWASP Password Storage Cheat Sheet. <a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html</a></p>
+<p>[4] refraction-networking&#x2F;utls. <a target="_blank" rel="noopener" href="https://github.com/refraction-networking/utls">https://github.com/refraction-networking/utls</a></p>
+<p>[5] trojan-gfw&#x2F;trojan. <a target="_blank" rel="noopener" href="https://github.com/trojan-gfw/trojan">https://github.com/trojan-gfw/trojan</a></p>
+<p>[6] Xue H, et al. The Discriminative Power of Cross-layer RTTs in Fingerprinting Proxy Traffic. NDSS ‘25. <a target="_blank" rel="noopener" href="https://www.ndss-symposium.org/ndss-paper/the-discriminative-power-of-cross-layer-rtts-in-fingerprinting-proxy-traffic/">https://www.ndss-symposium.org/ndss-paper/the-discriminative-power-of-cross-layer-rtts-in-fingerprinting-proxy-traffic/</a></p>
+<p>[7] 仓库 CI 工作流 <code>.github/workflows/ci.yml</code>。</p>
+<p>[8] TLS ALPN extension in wss-schemed WebSockets. Chrome Platform Status. <a target="_blank" rel="noopener" href="https://chromestatus.com/feature/5687059162333184">https://chromestatus.com/feature/5687059162333184</a></p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;Huntersxy</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">https://blog.xiey.work/2026/09/25/XProxy%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2026-09-26");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2026-09-25T17:33:00.000Z" itemprop="datePublished">2026-09-26</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/tags/%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE/" rel="tag">#&nbsp;代理协议</a>
+
+<a class="post-tags-list-item" href="/tags/TLS/" rel="tag">#&nbsp;TLS</a>
+
+<a class="post-tags-list-item" href="/tags/%E5%8F%8D%E5%AE%A1%E6%9F%A5/" rel="tag">#&nbsp;反审查</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/2026/09/27/DNS%E6%8B%A9%E4%BC%98%E6%8E%A2%E6%B5%8B%E7%9A%84%E5%A4%B1%E6%95%88%E8%BE%B9%E7%95%8C/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">DNS 择优探测的失效边界：一次校园网排查实测</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/2026/09/25/%E5%88%86%E5%B1%82%E6%8E%92%E6%9F%A5%E4%B8%80%E6%AC%A1%E7%BD%91%E7%BB%9C%E5%B9%B2%E6%89%B0/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">分层排查一次网络干扰：实测记录与文献对照</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            
+<!-- LiveRe 新版 Web Component (2025+) -->
+<livere-comment client-id="G4BFanVJhMuLq2bC56sg"></livere-comment>
+<script type="module" src="https://www.livere.org/livere-widget.js"></script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://blog.xiey.work">In Huntersxy</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/huntersxy/hexo-theme-suka-bulie" target="_blank" class="footer-develop-a" rel="external noopener">Suka-bulie</a>
+    </p>
+</footer>
+
+
+            <!-- ### 右侧工具栏 (含暗色模式切换; 置于 PJAX 容器外, 全站常驻) ### -->
+            <!-- right side bar -->
+<div id="RightDownBtn">
+    <a id="btn" href="javascript:void(0)" target="_self" style="">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-xuanfufanhuidingbu">
+                <svg id="icon-xuanfufanhuidingbu" viewBox="0 0 1024 1024">
+                    <path d="M0 512c0 282.624 229.376 512 512 512s512-229.376 512-512S794.624 0 512 0 0 229.376 0 512z"
+                        fill="#1989FA"></path>
+                    <path
+                        d="M736.768 263.68H287.232c-12.288 0-23.04 10.752-23.04 23.04s10.752 23.04 23.04 23.04H737.28c12.288 0 23.04-10.752 23.04-23.04s-10.752-23.04-23.552-23.04m-207.872 105.472c-1.536-1.536-4.608-4.608-7.68-4.608-3.072-1.536-6.144-1.536-7.68-1.536-3.072 0-6.144 0-7.68 1.536-3.072 1.536-4.608 3.072-7.68 4.608l-186.368 186.368c-9.216 9.216-9.216 23.04 0 32.768 9.216 9.216 23.04 9.216 32.768 0l145.92-145.92V737.28c0 12.288 10.752 23.04 23.04 23.04s23.04-10.752 23.04-23.04V442.368l145.92 145.92c4.608 4.608 10.752 6.144 16.896 6.144 6.144 0 12.288-1.536 16.896-6.144 9.216-9.216 9.216-23.04 0-32.768l-187.392-186.368z"
+                        fill="#FFFFFF"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+    <a id="settings-toggle" onclick="toggleSukaSettings()" target="_self" title="设置" aria-label="打开设置" aria-expanded="false">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-caidanfenlei">
+                <svg id="icon-caidanfenlei" viewBox="0 0 1024 1024">
+                    <path
+                        d="M884.736 596.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04s-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M884.736 509.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                    <path
+                        d="M884.736 276.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04s-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M137.216 189.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                    <path
+                        d="M884.736 916.48h-747.52c-47.616 0-87.04-38.912-87.04-87.04 0-47.616 38.912-87.04 87.04-87.04h747.52c47.616 0 87.04 38.912 87.04 87.04 0 47.616-39.424 87.04-87.04 87.04z"
+                        fill="#FF948D"></path>
+                    <path d="M137.216 829.44m-87.04 0a87.04 87.04 0 1 0 174.08 0 87.04 87.04 0 1 0-174.08 0Z"
+                        fill="#FF0000"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+    <a id="say" class="is-page-hidden" href="#vcomments" target="_self" title="评论" aria-label="评论">
+        <svg style=" width: 1.5em;height: 1.5em;" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-ketangtaolun">
+                <svg id="icon-ketangtaolun" viewBox="0 0 1234 1024">
+                    <path
+                        d="M736.914286 393.472c-20.114286-46.628571-47.542857-88.685714-84.114286-121.6-34.742857-34.742857-74.971429-62.171429-123.428571-82.285714-46.628571-20.114286-95.085714-30.171429-149.028572-29.257143-53.942857 0-102.4 11.885714-149.028571 32-46.628571 20.114286-86.857143 49.371429-121.6 84.114286-34.742857 34.742857-60.342857 76.8-81.371429 124.342857-20.114286 47.542857-28.342857 96.914286-28.342857 151.771428 1.828571 50.285714 11.885714 98.742857 29.257143 141.714286 19.2 42.971429 42.057143 82.285714 72.228571 116.114286 8.228571 10.057143 14.628571 21.942857 17.371429 34.742857 1.828571 11.885714-2.742857 21.942857-14.628572 27.428571-21.942857 11.885714-49.371429 20.114286-79.542857 25.6-5.485714 1.828571 5.485714 5.485714 34.742857 15.542857 29.257143 10.057143 74.057143 17.371429 134.4 22.857143 27.428571 2.742857 52.114286 4.571429 74.057143 5.485715h59.428572c17.371429 0 32.914286-1.828571 47.542857-2.742858 14.628571-1.828571 27.428571-2.742857 40.228571-4.571428 49.371429-5.485714 95.085714-19.2 137.142857-42.057143 42.971429-21.942857 79.542857-50.285714 111.542858-85.028571 32-34.742857 56.685714-74.057143 74.057142-118.857143 17.371429-44.8 25.6-92.342857 25.6-143.542857 4.571429-53.028571-6.4-104.228571-26.514285-151.771429"
+                        fill="#E6E6E6"></path>
+                    <path
+                        d="M736.914286 393.472c-20.114286-46.628571-47.542857-88.685714-84.114286-121.6-34.742857-34.742857-74.971429-62.171429-123.428571-82.285714-46.628571-20.114286-95.085714-30.171429-149.028572-29.257143-53.942857 0-102.4 11.885714-149.028571 32-46.628571 20.114286-86.857143 49.371429-121.6 84.114286-34.742857 34.742857-60.342857 76.8-81.371429 124.342857-20.114286 47.542857-28.342857 96.914286-28.342857 151.771428 1.828571 50.285714 11.885714 98.742857 29.257143 141.714286 19.2 42.971429 42.057143 82.285714 72.228571 116.114286 8.228571 10.057143 14.628571 21.942857 17.371429 34.742857 1.828571 11.885714-2.742857 21.942857-14.628572 27.428571-21.942857 11.885714-49.371429 20.114286-79.542857 25.6-5.485714 1.828571 5.485714 5.485714 34.742857 15.542857 29.257143 10.057143 74.057143 17.371429 134.4 22.857143 27.428571 2.742857 52.114286 4.571429 74.057143 5.485715h59.428572c17.371429 0 32.914286-1.828571 47.542857-2.742858 14.628571-1.828571 27.428571-2.742857 40.228571-4.571428 49.371429-5.485714 95.085714-19.2 137.142857-42.057143 42.971429-21.942857 79.542857-50.285714 111.542858-85.028571 32-34.742857 56.685714-74.057143 74.057142-118.857143 17.371429-44.8 25.6-92.342857 25.6-143.542857 4.571429-53.028571-6.4-104.228571-26.514285-151.771429"
+                        fill="#22E5B1"></path>
+                    <path
+                        d="M1101.714286 933.814857c-14.628571-8.228571-20.114286-20.114286-19.2-34.742857 2.742857-15.542857 10.057143-29.257143 21.942857-42.971429 37.485714-42.057143 67.657143-89.6 91.428571-144.457142 22.857143-56.685714 36.571429-116.114286 37.485715-179.2 1.828571-67.657143-11.885714-131.657143-36.571429-191.085715s-59.428571-111.542857-102.4-156.342857c-42.971429-44.8-94.171429-79.542857-153.6-106.057143-58.514286-26.514286-120.685714-39.314286-187.428571-41.142857-66.742857-1.828571-129.828571 11.885714-188.342858 36.571429-59.428571 24.685714-109.714286 59.428571-154.514285 102.4-44.8 43.885714-79.542857 94.171429-106.057143 153.6-25.6 59.428571-39.314286 123.428571-39.314286 189.257143-1.828571 64 10.057143 124.342857 32 181.028571 21.942857 56.685714 53.942857 106.971429 94.171429 150.857143 40.228571 42.971429 86.857143 79.542857 140.8 106.971428 53.942857 29.257143 112.457143 46.628571 175.542857 52.114286 15.542857 2.742857 32.914286 4.571429 52.114286 5.485714 19.2 1.828571 39.314286 2.742857 60.342857 2.742858 21.942857 1.828571 47.542857 1.828571 74.971428 0 27.428571-1.828571 57.6-2.742857 92.342857-7.314286 76.8-7.314286 133.485714-17.371429 170.971429-29.257143 37.485714-11.885714 52.114286-19.2 44.8-20.114286-39.314286-3.657143-72.228571-13.714286-101.485714-28.342857"
+                        fill="#E6E6E6"></path>
+                    <path
+                        d="M1056 897.243429c-14.628571-8.228571-20.114286-20.114286-19.2-34.742858 2.742857-15.542857 10.057143-29.257143 21.942857-42.971428 37.485714-42.057143 67.657143-89.6 91.428572-144.457143 22.857143-56.685714 36.571429-116.114286 37.485714-179.2 1.828571-67.657143-11.885714-131.657143-36.571429-191.085714-24.685714-59.428571-59.428571-111.542857-102.4-156.342857-42.971429-45.714286-93.257143-80.457143-152.685714-106.971429-59.428571-25.6-121.6-38.4-188.342857-40.228571-66.742857-1.828571-129.828571 11.885714-188.342857 36.571428-59.428571 24.685714-109.714286 59.428571-154.514286 102.4-44.8 43.885714-79.542857 94.171429-106.057143 153.6-25.6 59.428571-39.314286 123.428571-39.314286 189.257143-1.828571 64 10.057143 124.342857 32 181.028571 21.942857 56.685714 53.942857 106.971429 94.171429 150.857143 40.228571 42.971429 86.857143 79.542857 140.8 106.971429 53.942857 29.257143 112.457143 46.628571 175.542857 52.114286 15.542857 2.742857 32.914286 4.571429 52.114286 5.485714 19.2 1.828571 39.314286 2.742857 60.342857 2.742857 21.942857 1.828571 47.542857 1.828571 74.971429 0 27.428571-1.828571 57.6-2.742857 92.342857-7.314286 76.8-7.314286 133.485714-17.371429 170.971428-29.257143 37.485714-11.885714 52.114286-19.2 44.8-20.114285-39.314286-3.657143-72.228571-13.714286-101.485714-28.342857"
+                        fill="#16D7A3"></path>
+                    <path
+                        d="M896.914286 429.714286H739.657143L768 223.085714c1.828571-5.485714-2.742857-11.885714-8.228571-14.628571-5.485714-4.571429-12.8-4.571429-17.371429 0L499.2 496.457143c-1.828571 1.828571-2.742857 4.571429-4.571429 5.485714-0.914286 1.828571-0.914286 4.571429-0.914285 7.314286 0 8.228571 7.314286 15.542857 15.542857 15.542857h159.085714l-30.171428 233.142857v2.742857c-1.828571 5.485714 0 11.885714 4.571428 15.542857 5.485714 5.485714 15.542857 5.485714 21.942857 0l244.114286-320.914285c2.742857-2.742857 4.571429-7.314286 4.571429-11.885715 0-6.4-7.314286-13.714286-16.457143-13.714285"
+                        fill="#FFFFFF"></path>
+                </svg>
+            </use>
+        </svg>
+    </a>
+
+    
+    <a id="dark-mode-toggle" onclick="toggleDarkMode()" title="切换亮暗模式" aria-label="切换亮暗模式">
+        <svg class="dm-icon dm-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="dm-icon dm-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+        </svg>
+    </a>
+    
+    <svg aria-hidden="true" style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
+        <symbol id="icon-sun" viewBox="0 0 1024 1024">
+            <path
+                d="M511.99976 511.99976m-511.99976 0a511.99976 511.99976 0 1 0 1023.99952 0 511.99976 511.99976 0 1 0-1023.99952 0Z"
+                fill="#91D2F2"></path>
+            <path
+                d="M144.623932 868.455593C237.679889 964.327548 367.831828 1023.99952 511.99976 1023.99952c269.983873 0 490.99977-209.007902 510.455761-474.031778C956.991551 535.703749 887.559584 527.999753 815.623618 527.999753c-309.535855 0-572.895731 142.055933-670.999686 340.45584z"
+                fill="#198058"></path>
+            <path
+                d="M979.623541 575.99973c-351.319835 0-647.791696 155.655927-741.279653 368.639827A509.359761 509.359761 0 0 0 511.99976 1023.99952c260.839878 0 475.967777-195.111909 507.799762-447.31979a1194.34344 1194.34344 0 0 0-40.175981-0.68z"
+                fill="#1E9969"></path>
+            <path
+                d="M69.711967 769.831639C158.503926 921.815568 323.271848 1023.99952 511.99976 1023.99952a509.455761 509.455761 0 0 0 269.631874-76.783964C657.111692 828.375612 464.271782 751.999648 247.623884 751.999648c-61.575971 0-121.183943 6.271997-177.911917 17.831991z"
+                fill="#6AA33A"></path>
+            <path
+                d="M487.887771 1023.39152c-86.543959-122.151943-236.911889-214.679899-417.591804-252.543881 85.11996 144.919932 239.415888 244.279885 417.591804 252.543881z"
+                fill="#95E652"></path>
+            <path
+                d="M394.159815 167.999921l-45.255979 45.255979L303.647858 167.999921l45.255978-45.255979zM394.159815 503.999764l-45.255979 45.255979L303.655858 503.999764l45.247978-45.247979z"
+                fill="#FFF8E6"></path>
+            <path
+                d="M180.879915 290.719864l45.247979 45.247979-45.255979 45.255978-45.255979-45.255978zM516.903758 290.719864l45.247978 45.247979-45.247978 45.247978-45.247979-45.247978z"
+                fill="#FFF8E6"></path>
+            <path d="M198.087907 185.207913h63.99997v63.99997h-63.99997zM435.671796 422.791802h63.99997v63.99997h-63.99997z"
+                fill="#FFF8E6"></path>
+            <path d="M198.087907 422.791802h63.99997v63.99997h-63.99997zM435.671796 185.207913h63.99997v63.99997h-63.99997z"
+                fill="#FFF8E6"></path>
+            <path
+                d="M348.879836 335.999843m-183.999913 0a183.999914 183.999914 0 1 0 367.999827 0 183.999914 183.999914 0 1 0-367.999827 0Z"
+                fill="#FFEAB3"></path>
+            <path
+                d="M348.879836 335.999843m-159.999925 0a159.999925 159.999925 0 1 0 319.99985 0 159.999925 159.999925 0 1 0-319.99985 0Z"
+                fill="#FFDC80"></path>
+        </symbol>
+        <symbol id="icon-_moon" viewBox="0 0 1024 1024">
+            <path d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0Z" fill="#323232"></path>
+            <path
+                d="M512 512m-407.005867 0a407.005867 407.005867 0 1 0 814.011734 0 407.005867 407.005867 0 1 0-814.011734 0Z"
+                fill="#494A4A"></path>
+            <path
+                d="M748.1344 633.9584c0-1.143467 0.085333-2.286933 0.085333-3.413333a69.512533 69.512533 0 0 0-8.823466-33.979734q-1.058133-1.911467-2.2528-3.7376l-0.187734-0.3072a70.485333 70.485333 0 0 0-5.2736-7.099733l-0.238933-0.273067q-1.3312-1.536-2.730667-3.003733l-0.3072-0.324267a70.894933 70.894933 0 0 0-6.417066-5.819733l-0.5632-0.443733q-1.467733-1.160533-3.003734-2.235734l-0.494933-0.341333q-1.706667-1.2288-3.6352-2.3552l-0.256-0.136533q-1.706667-0.989867-3.413333-1.8944l-0.887467-0.4608q-1.604267-0.802133-3.242667-1.536l-0.6144-0.273067q-1.928533-0.836267-3.9424-1.553067l-0.8192-0.273066a54.8864 54.8864 0 0 0-3.242666-1.024l-1.143467-0.324267a85.248 85.248 0 0 0-3.601067-0.887467l-0.546133-0.119466a67.345067 67.345067 0 0 0-4.1984-0.733867l-1.143467-0.136533q-1.706667-0.2048-3.2768-0.341334l-1.245866-0.1024a74.786133 74.786133 0 0 0-4.386134-0.1536 69.8368 69.8368 0 0 0-20.48 3.037867 104.106667 104.106667 0 0 0-12.1344-11.076267 258.696533 258.696533 0 0 0-449.9456-248.763733 183.1424 183.1424 0 0 1 106.939734-34.2528c5.12 0 10.24 0.221867 15.36 0.631467a183.125333 183.125333 0 0 1 50.5344 11.52h0.170666q3.874133 1.501867 7.68 3.157333l0.256 0.1024 7.441067 3.413333 0.273067 0.136534q3.669333 1.826133 7.253333 3.805866l0.221867 0.119467q3.618133 2.013867 7.133866 4.164267a184.610133 184.610133 0 0 1 26.760534 20.036266h0.085333q2.986667 2.696533 5.870933 5.5296l0.324267 0.3072q2.781867 2.7648 5.461333 5.632l0.443734 0.477867q2.6112 2.833067 5.12 5.768533l0.494933 0.580267q2.4576 2.9184 4.795733 5.956267l0.494934 0.648533q2.321067 3.037867 4.522666 6.178133l0.426667 0.6144q2.2016 3.1744 4.283733 6.4512l0.324267 0.529067q2.116267 3.413333 4.078933 6.826667l0.170667 0.3072c1.553067 2.7136 3.0208 5.495467 4.437333 8.2944a56.149333 56.149333 0 0 0-12.578133 2.304 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009066 41.079467 104.277333 104.277333 0 0 0-42.2912 80.110933 13.653333 13.653333 0 0 0 0 1.4336v0.426667c0 0.136533 0.1024 0.682667 0.187733 1.024s0 0.3072 0.1024 0.4608 0.2048 0.733867 0.324267 1.092267l0.1024 0.3072a15.36 15.36 0 0 0 0.580266 1.416533l0.1024 0.187733a16.520533 16.520533 0 0 0 0.648534 1.211734l0.221866 0.3584c0.221867 0.3584 0.4608 0.733867 0.7168 1.092266l0.221867 0.3072a26.333867 26.333867 0 0 0 2.338133 2.798934l0.119467 0.119466q0.6144 0.631467 1.297067 1.262934l0.2048 0.187733q0.7168 0.648533 1.501866 1.297067 1.706667 1.416533 3.720534 2.781866c0.6656 0.4608 1.348267 0.904533 2.065066 1.348267 26.914133 16.7936 87.995733 28.535467 159.044267 28.535467 19.3536 0 37.956267-0.8704 55.3472-2.474667l-0.494933 0.750933-0.426667 0.6144q-2.2016 3.140267-4.539733 6.178134l-0.477867 0.631466q-2.338133 3.037867-4.795733 5.956267l-0.494934 0.580267q-2.491733 2.935467-5.12 5.7856l-0.443733 0.477866q-2.679467 2.884267-5.461333 5.649067l-0.3072 0.290133q-2.884267 2.833067-5.870934 5.546667a184.8832 184.8832 0 0 1-26.7776 20.036267q-3.515733 2.167467-7.150933 4.181333l-0.187733 0.1024q-3.584 1.979733-7.2704 3.805867l-0.256 0.136533q-3.6864 1.826133-7.458134 3.413333l-0.238933 0.1024q-3.805867 1.706667-7.68 3.157334h-0.136533a183.057067 183.057067 0 0 1-50.551467 11.52c-5.12 0.4096-10.24 0.631467-15.36 0.631466a183.159467 183.159467 0 0 1-106.939733-34.2528 258.5088 258.5088 0 0 0 180.138666 107.093334 109.550933 109.550933 0 0 0-3.259733 26.453333 16.520533 16.520533 0 0 0 0.1024 1.706667v0.529066c0 0.170667 0.136533 0.853333 0.221867 1.262934l0.136533 0.5632 0.392533 1.365333 0.136534 0.4096a13.892267 13.892267 0 0 0 0.733866 1.706667l0.119467 0.238933c0.238933 0.512 0.512 1.006933 0.802133 1.501867l0.273067 0.443733q0.4096 0.682667 0.887467 1.365333l0.273066 0.375467a33.0752 33.0752 0 0 0 2.9184 3.413333l0.1536 0.1536 1.5872 1.553067 0.273067 0.256 1.8432 1.621333q2.116267 1.706667 4.625067 3.413334l2.56 1.706666c33.467733 20.8896 109.431467 35.4816 197.802666 35.4816 119.330133 0 216.046933-26.606933 216.046934-59.409066a131.413333 131.413333 0 0 0-56.285867-102.058667z"
+                fill="#323232"></path>
+            <path
+                d="M573.8496 401.8176v-2.781867a56.200533 56.200533 0 0 0-72.6016-53.725866 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009066 41.079467 104.277333 104.277333 0 0 0-42.257067 80.0768c0 26.385067 77.7728 47.786667 173.7216 47.786667s173.7216-21.384533 173.7216-47.786667a105.659733 105.659733 0 0 0-45.568-82.688z"
+                fill="#CDCCCA"></path>
+            <path
+                d="M293.768533 506.2656a104.277333 104.277333 0 0 1 42.2912-80.110933 42.530133 42.530133 0 0 1 53.009067-41.079467 82.807467 82.807467 0 0 1 134.007467-18.039467 56.32 56.32 0 0 1 43.758933 4.642134 56.2176 56.2176 0 0 0-65.518933-26.4192 82.824533 82.824533 0 0 0-134.007467 18.039466 42.530133 42.530133 0 0 0-53.009067 41.079467 104.277333 104.277333 0 0 0-42.325333 80.128c0 8.413867 7.936 16.3328 21.845333 23.210667a13.294933 13.294933 0 0 1-0.0512-1.450667z"
+                fill="#E8E9EC"></path>
+            <path
+                d="M453.4784 166.912a258.338133 258.338133 0 0 0-210.944 108.919467 183.995733 183.995733 0 1 1 0 299.451733 258.6624 258.6624 0 1 0 210.944-408.388267z"
+                fill="#DDAE2A"></path>
+            <path
+                d="M364.834133 608.9216q7.594667 0.631467 15.36 0.648533a183.995733 183.995733 0 0 0 0-367.9744q-7.748267 0-15.36 0.631467a183.995733 183.995733 0 0 1 0 366.6944z"
+                fill="#EDC849"></path>
+            <path
+                d="M794.7776 605.969067c0-1.143467 0.085333-2.286933 0.085333-3.413334a69.973333 69.973333 0 0 0-90.299733-66.833066 102.997333 102.997333 0 0 0-166.656 22.4256 52.906667 52.906667 0 0 0-65.928533 51.0976 129.706667 129.706667 0 0 0-52.599467 99.6352c0 32.8192 96.733867 59.409067 216.046933 59.409066s216.046933-26.606933 216.046934-59.409066a131.413333 131.413333 0 0 0-56.695467-102.912z"
+                fill="#CDCCCA"></path>
+            <path
+                d="M446.481067 735.914667a129.706667 129.706667 0 0 1 52.599466-99.6352 52.906667 52.906667 0 0 1 65.928534-51.080534 102.997333 102.997333 0 0 1 166.6048-22.442666 69.973333 69.973333 0 0 1 54.408533 5.7856 69.973333 69.973333 0 0 0-81.476267-32.853334 102.997333 102.997333 0 0 0-166.656 22.4256 52.906667 52.906667 0 0 0-65.928533 51.0976 129.706667 129.706667 0 0 0-52.599467 99.6352c0 10.478933 9.864533 20.309333 27.170134 28.859734a17.408 17.408 0 0 1-0.0512-1.792z"
+                fill="#E8E9EC"></path>
+        </symbol>
+    </svg>
+
+</div>
+
+<div id="suka-settings" class="suka-settings" aria-hidden="true">
+    <div class="suka-settings-backdrop" data-settings-close></div>
+    <section class="suka-settings-panel" role="dialog" aria-modal="true" aria-labelledby="suka-settings-title">
+        <div class="suka-settings-header">
+            <h2 id="suka-settings-title">设置</h2>
+            <button type="button" class="suka-settings-close" data-settings-close aria-label="关闭设置">×</button>
+        </div>
+        <label class="suka-setting-row">
+            <span>背景粒子特效</span>
+            <input id="setting-particles" type="checkbox">
+            <span class="suka-setting-switch" aria-hidden="true"></span>
+        </label>
+        <label class="suka-setting-row">
+            <span>左上角天气</span>
+            <input id="setting-weather" type="checkbox">
+            <span class="suka-setting-switch" aria-hidden="true"></span>
+        </label>
+    </section>
+</div>
+
+<script>
+    function BackTOP() {
+        // PJAX 无刷新加载: 脚本会随页面内容重复执行, 这里用标记保证只绑定一次
+        if (window.__sukaBackTopInited) return;
+        window.__sukaBackTopInited = true;
+        // 显示/隐藏走 CSS 过渡 (.is-visible); 滚动事件高频触发,
+        // 状态未变化时直接返回, 只在翻转时才查 DOM 改 class
+        var btnState = null;
+        function setVisible(v) {
+            if (v === btnState) return;
+            btnState = v;
+            var el = document.getElementById('RightDownBtn');
+            if (el) el.classList.toggle('is-visible', v);
+        }
+        // 事件全部委托到 document/window, 局部刷新后依然有效 (无 jQuery 依赖)
+        window.addEventListener('scroll', function () {
+            setVisible((window.scrollY || document.documentElement.scrollTop) > 200);
+        }, { passive: true });
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest) return;
+            if (e.target.closest('#btn')) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (e.target.closest('#say')) {
+                e.preventDefault();
+                window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+            } else if (e.target.closest('#readmode')) {
+                document.body.classList.toggle('read-mode');
+            }
+        });
+        // PJAX 刷新后浮动栏是新 DOM, 先隐藏, 等待滚动再显示
+        document.addEventListener('pjax:end', function () {
+            setVisible(false);
+        });
+    }
+
+    function syncCommentButton() {
+        var button = document.getElementById('say');
+        if (!button) return;
+        button.classList.toggle('is-page-hidden', !document.querySelector('#post-card'));
+    }
+
+    function readSukaSetting(name, fallback) {
+        try {
+            var value = localStorage.getItem('suka-setting-' + name);
+            return value === null ? fallback : value === '1';
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function saveSukaSetting(name, value) {
+        try {
+            localStorage.setItem('suka-setting-' + name, value ? '1' : '0');
+        } catch (e) { /* 隐私模式下仅本次生效 */ }
+    }
+
+    function applySukaSetting(name, value) {
+        saveSukaSetting(name, value);
+        if (name === 'particles' && window.SukaParticles) window.SukaParticles.setEnabled(value);
+        if (name === 'weather' && window.SukaWeather) window.SukaWeather.setEnabled(value);
+    }
+
+    function closeSukaSettings() {
+        var panel = document.getElementById('suka-settings');
+        var toggle = document.getElementById('settings-toggle');
+        if (panel) {
+            panel.classList.remove('is-open');
+            panel.setAttribute('aria-hidden', 'true');
+        }
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleSukaSettings() {
+        var panel = document.getElementById('suka-settings');
+        var toggle = document.getElementById('settings-toggle');
+        if (!panel) return;
+        var open = !panel.classList.contains('is-open');
+        panel.classList.toggle('is-open', open);
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function SukaSettings() {
+        if (window.__sukaSettingsInited) {
+            syncCommentButton();
+            return;
+        }
+        window.__sukaSettingsInited = true;
+        var particles = document.getElementById('setting-particles');
+        var weather = document.getElementById('setting-weather');
+        if (particles) {
+            particles.checked = readSukaSetting('particles', true);
+            particles.addEventListener('change', function () { applySukaSetting('particles', particles.checked); });
+        }
+        if (weather) {
+            weather.checked = readSukaSetting('weather', true);
+            weather.addEventListener('change', function () { applySukaSetting('weather', weather.checked); });
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest) return;
+            if (e.target.closest('[data-settings-close]')) closeSukaSettings();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeSukaSettings();
+        });
+        document.addEventListener('pjax:end', syncCommentButton);
+        syncCommentButton();
+    }
+
+    
+    // 暗色模式切换: 与 head 里的前置脚本配合 (localStorage 记忆, 未手动选择时跟随系统)
+    function toggleDarkMode() {
+        var root = document.documentElement;
+        var dark = root.getAttribute('data-theme') === 'dark';
+        if (dark) {
+            root.removeAttribute('data-theme');
+        } else {
+            root.setAttribute('data-theme', 'dark');
+        }
+        // 同步浏览器地址栏颜色 (head 里输出了 light/dark 两个 theme-color meta)
+        var mcs = document.querySelectorAll('meta[name="theme-color"]');
+        for (var i = 0; i < mcs.length; i++) {
+            var m = mcs[i];
+            if (!m.dataset.light) m.dataset.light = m.getAttribute('content');
+            m.setAttribute('content', dark ? m.dataset.light : '#0f141b');
+        }
+        try {
+            localStorage.setItem('suka-dark-mode', dark ? '0' : '1');
+        } catch (e) { /* 隐私模式下 localStorage 不可用, 仅本次会话生效 */ }
+    }
+    
+    BackTOP();
+    SukaSettings();
+</script>
+
+<style>
+    html.suka-weather-disabled #tp-weather-widget {
+        display: none !important;
+    }
+
+    .is-page-hidden {
+        display: none !important;
+    }
+
+    #RightDownBtn {
+        position: fixed;
+        right: 1.875rem;
+        bottom: 1.875rem;
+        padding: 0.3125rem 0.625rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 0.3125rem rgba(0, 0, 0, .4);
+        z-index: 1000;
+        align-items: flex-end;
+        flex-direction: column;
+        display: -moz-flex;
+        display: flex;
+        float: right;
+        /* 动画: 默认隐藏, 加 .is-visible 后上浮淡入 */
+        opacity: 0;
+        transform: translateY(1rem);
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1), visibility .35s;
+    }
+
+    #RightDownBtn.is-visible {
+        opacity: 1;
+        transform: none;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* 按钮: 入场时逐个级联浮现, 悬浮时弹性放大 */
+    #RightDownBtn > a,
+    #RightDownBtn > label {
+        width: 1.5em;
+        height: 1.5em;
+        margin: 0.3125rem 0;
+        opacity: 0;
+        transform: translateY(.5rem) scale(.85);
+        transition: opacity .3s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    #RightDownBtn.is-visible > a,
+    #RightDownBtn.is-visible > label {
+        opacity: 1;
+        transform: none;
+    }
+
+    #RightDownBtn.is-visible > a:nth-child(1) { transition-delay: .05s; }
+    #RightDownBtn.is-visible > a:nth-child(2) { transition-delay: .1s; }
+    #RightDownBtn.is-visible > a:nth-child(3) { transition-delay: .15s; }
+    #RightDownBtn.is-visible > a:nth-child(4) { transition-delay: .2s; }
+    #RightDownBtn.is-visible > a:nth-child(5) { transition-delay: .25s; }
+    #RightDownBtn.is-visible > a:nth-child(6) { transition-delay: .3s; }
+
+    /* 暗色模式下的浮动栏 */
+    [data-theme="dark"] #RightDownBtn {
+        background: #1a212b;
+        box-shadow: 0 0 0.3125rem rgb(0 0 0 / .6);
+    }
+
+    [data-theme="dark"] #RightDownBtn a {
+        color: #c9d3e0;
+    }
+
+    /* 亮色显示月亮 (点击进入暗色), 暗色显示太阳 */
+    #dark-mode-toggle .dm-icon {
+        width: 1.5em;
+        height: 1.5em;
+        display: inline-block;
+    }
+
+    #dark-mode-toggle .dm-icon-sun { display: none; }
+
+    [data-theme="dark"] #dark-mode-toggle .dm-icon-moon { display: none; }
+    [data-theme="dark"] #dark-mode-toggle .dm-icon-sun { display: inline-block; }
+
+
+    .suka-settings {
+        position: fixed;
+        inset: 0;
+        z-index: 1001;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .suka-settings.is-open {
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .suka-settings-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgb(20 28 40 / .16);
+        opacity: 0;
+        transition: opacity .25s ease;
+    }
+
+    .suka-settings-panel {
+        position: absolute;
+        right: 5.2rem;
+        bottom: 1.875rem;
+        width: min(19rem, calc(100vw - 2rem));
+        padding: .8rem 1rem 1rem;
+        color: #50596c;
+        background: rgb(255 255 255 / .94);
+        border: 1px solid rgb(255 255 255 / .72);
+        border-radius: .75rem;
+        box-shadow: 0 8px 28px rgb(0 0 0 / .22);
+        backdrop-filter: blur(14px);
+        transform: translateY(.75rem) scale(.97);
+        opacity: 0;
+        transition: opacity .25s ease, transform .25s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .suka-settings.is-open .suka-settings-backdrop {
+        opacity: 1;
+    }
+
+    .suka-settings.is-open .suka-settings-panel {
+        opacity: 1;
+        transform: none;
+    }
+
+    .suka-settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: .55rem;
+    }
+
+    .suka-settings-header h2 {
+        margin: 0;
+        font-size: .95rem;
+        font-weight: 600;
+    }
+
+    .suka-settings-close {
+        padding: 0 .25rem;
+        color: #667189;
+        font-size: 1.3rem;
+        line-height: 1;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .suka-setting-row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 2.2rem;
+        color: #596579;
+        font-size: .78rem;
+        cursor: pointer;
+    }
+
+    .suka-setting-row input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    .suka-setting-switch {
+        position: relative;
+        flex: 0 0 auto;
+        width: 2.25rem;
+        height: 1.25rem;
+        background: #c7ced8;
+        border-radius: 1rem;
+        transition: background .2s ease;
+    }
+
+    .suka-setting-switch::after {
+        position: absolute;
+        top: .15rem;
+        left: .15rem;
+        width: .95rem;
+        height: .95rem;
+        content: '';
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgb(0 0 0 / .22);
+        transition: transform .2s ease;
+    }
+
+    .suka-setting-row input:checked + .suka-setting-switch {
+        background: #3273dc;
+    }
+
+    .suka-setting-row input:checked + .suka-setting-switch::after {
+        transform: translateX(1rem);
+    }
+
+    .suka-setting-row input:focus-visible + .suka-setting-switch {
+        outline: 2px solid rgb(50 115 220 / .45);
+        outline-offset: 2px;
+    }
+
+    [data-theme="dark"] .suka-settings-backdrop {
+        background: rgb(0 0 0 / .45);
+    }
+
+    [data-theme="dark"] .suka-settings-panel {
+        color: var(--dm-text);
+        background: rgb(22 29 39 / .96);
+        border-color: var(--dm-border);
+    }
+
+    [data-theme="dark"] .suka-settings-close,
+    [data-theme="dark"] .suka-setting-row {
+        color: var(--dm-text-2);
+    }
+
+    @media (max-width: 640px) {
+        #RightDownBtn {
+            right: 0;
+            bottom: max(.75rem, env(safe-area-inset-bottom));
+            padding: .25rem .35rem .25rem .25rem;
+            border-radius: .75rem 0 0 .75rem;
+        }
+
+        #RightDownBtn > a,
+        #RightDownBtn > label {
+            width: 1.35em;
+            height: 1.35em;
+            margin: .25rem 0;
+        }
+
+        .suka-settings-panel {
+            right: .5rem;
+            bottom: max(.5rem, env(safe-area-inset-bottom));
+            left: .5rem;
+            width: auto;
+            border-radius: .9rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .suka-settings-backdrop,
+        .suka-settings-panel,
+        .suka-setting-switch,
+        .suka-setting-switch::after {
+            transition: none !important;
+        }
+    }
+
+    #RightDownBtn.is-visible > a:hover,
+    #RightDownBtn.is-visible > label:hover {
+        transform: scale(1.2);
+        transition-delay: 0s;
+        filter: drop-shadow(0 .25rem .375rem rgba(0, 0, 0, .35));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #RightDownBtn,
+        #RightDownBtn > a,
+        #RightDownBtn > label {
+            transition: none !important;
+        }
+    }
+
+    /* 工具栏内均为可点击锚点 (部分无 href), 统一指针与配色;
+       全站链接主色已移回 style.css 的 Global 段 */
+    #RightDownBtn a {
+        color: #3273dc;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+</style>
+
+<!-- right side bar.end -->
+<!-- 注: 此处原有一个带语法错误 (if () 空条件) 且从未生效的脚本块, 每次加载都会报
+     SyntaxError, 已移除; 浮动栏的显示/隐藏由上方 BackTOP() 的委托绑定处理。 -->
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<!-- ### PJAX (无刷新加载) ### -->
+
+<script>
+    window.SukaPjaxConfig = {"container":"#pjax-container","exclude":[],"timeout":10000,"cache":20,"transition":160,"prefetch":{"enable":true,"delay":150,"idle":true}};
+</script>
+<script src="/js/pjax.min.js?v=1.8.2"></script>
+
+
+<script>
+
+    
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2021;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka-bulie Theme (hexo-theme-suka-bulie) | fork of SukkaW/hexo-theme-suka | Verision 1.8.2 %c https://github.com/huntersxy/hexo-theme-suka-bulie \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+document.addEventListener('click', function (e) {
+    var card = e.target && e.target.closest ? e.target.closest('.post-entry') : null;
+    if (!card) return;
+    if (e.target.closest('a, button, input, select, label')) return;
+    var link = card.querySelector('a[rel="bookmark"], a.card-title');
+    if (link) link.click();
+}, true);
+
+if (window.matchMedia) {
+    var sukaSchemeMq = matchMedia('(prefers-color-scheme: dark)');
+    var sukaOnScheme = function (e) {
+        var chosen;
+        try { chosen = localStorage.getItem('suka-dark-mode'); } catch (err) {}
+        if (chosen === '1' || chosen === '0') return;
+        document.documentElement[e.matches ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+    };
+    if (sukaSchemeMq.addEventListener) sukaSchemeMq.addEventListener('change', sukaOnScheme);
+}
+
+</script>
+
+
+    <script src="https://fastly.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+
+
+    </body>
+
+</html>
+
+<!-- # 这是线条动画 # -->
+<script>
+(function () {
+    'use strict';
+
+    var canvas = null;
+    var context = null;
+    var points = [];
+    var cursor = { x: null, y: null, max: 20000 };
+    var width = 0;
+    var height = 0;
+    var frame = 0;
+    var running = false;
+    var raf = window.requestAnimationFrame || function (callback) { return window.setTimeout(callback, 1000 / 45); };
+    var caf = window.cancelAnimationFrame || window.clearTimeout;
+
+    function storedEnabled(name) {
+        try {
+            return localStorage.getItem('suka-setting-' + name) !== '0';
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function resize() {
+        if (!canvas) return;
+        width = canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        height = canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    }
+
+    function move(event) {
+        cursor.x = event.clientX;
+        cursor.y = event.clientY;
+    }
+
+    function leave() {
+        cursor.x = null;
+        cursor.y = null;
+    }
+
+    // 分桶批量绘制: 每帧把连线按透明度分到 BUCKETS 个桶, 每桶只设置一次
+    // strokeStyle/lineWidth 并用单一路径 stroke, 避免每条线拼 rgba 字符串
+    // (约千次/帧的字符串分配与状态切换) 造成的主线程与 GC 压力
+    var BUCKETS = 8;
+    var bucketStyles = [];
+    var bucketWidths = [];
+    var bucketSegs = [];
+    for (var b = 0; b < BUCKETS; b++) {
+        var midAlpha = (b + .5) / BUCKETS; // 桶中点的 opacity 近似值
+        bucketStyles.push('rgba(0,0,0,' + Math.min(1, midAlpha + .2).toFixed(3) + ')');
+        bucketWidths.push(midAlpha / 2);
+        bucketSegs.push([]);
+    }
+
+    function draw() {
+        if (!running || !context) return;
+        context.clearRect(0, 0, width, height);
+        for (var s = 0; s < BUCKETS; s++) bucketSegs[s].length = 0;
+        for (var i = 0; i < points.length; i++) {
+            var point = points[i];
+            point.x += point.xa;
+            point.y += point.ya;
+            point.xa *= point.x > width || point.x < 0 ? -1 : 1;
+            point.ya *= point.y > height || point.y < 0 ? -1 : 1;
+            context.fillRect(point.x - .5, point.y - .5, 1, 1);
+            for (var j = i + 1; j < points.length; j++) {
+                var target = points[j];
+                if (target.x === null || target.y === null) continue;
+                var dx = point.x - target.x;
+                var dy = point.y - target.y;
+                var distance = dx * dx + dy * dy;
+                if (distance >= target.max) continue;
+                if (target === cursor && distance >= target.max / 2) {
+                    point.x -= .03 * dx;
+                    point.y -= .03 * dy;
+                }
+                var opacity = (target.max - distance) / target.max;
+                var bucket = opacity >= 1 ? BUCKETS - 1 : (opacity * BUCKETS) | 0;
+                var segs = bucketSegs[bucket];
+                segs.push(point.x, point.y, target.x, target.y);
+            }
+        }
+        for (var k = 0; k < BUCKETS; k++) {
+            var seg = bucketSegs[k];
+            if (seg.length === 0) continue;
+            context.beginPath();
+            context.lineWidth = bucketWidths[k];
+            context.strokeStyle = bucketStyles[k];
+            for (var n = 0; n < seg.length; n += 4) {
+                context.moveTo(seg[n], seg[n + 1]);
+                context.lineTo(seg[n + 2], seg[n + 3]);
+            }
+            context.stroke();
+        }
+        frame = raf(draw);
+    }
+
+    function start() {
+        if (running) return;
+        running = true;
+        canvas = document.createElement('canvas');
+        canvas.id = 'suka-particles';
+        canvas.setAttribute('aria-hidden', 'true');
+        canvas.style.cssText = 'position:fixed;top:0;left:0;z-index:-1;opacity:.5;pointer-events:none;';
+        context = canvas.getContext('2d');
+        document.body.appendChild(canvas);
+        resize();
+        points = [];
+        // 点数随视口面积自适应: 手机约 24 点, 桌面满屏 50 点
+        // (连线判定是 O(n^2), 小屏跑满 50 点纯属浪费电)
+        var count = Math.max(24, Math.min(50, Math.round(width * height / 20000)));
+        for (var i = 0; i < count; i++) {
+            points.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                xa: 2 * Math.random() - 1,
+                ya: 2 * Math.random() - 1,
+                max: 6000
+            });
+        }
+        points.push(cursor);
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseout', leave);
+        frame = raf(draw);
+    }
+
+    function stop() {
+        running = false;
+        if (frame) caf(frame);
+        frame = 0;
+        window.removeEventListener('resize', resize);
+        window.removeEventListener('mousemove', move);
+        window.removeEventListener('mouseout', leave);
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        canvas = null;
+        context = null;
+        points = [];
+    }
+
+    window.SukaParticles = {
+        setEnabled: function (enabled) {
+            try { localStorage.setItem('suka-setting-particles', enabled ? '1' : '0'); } catch (e) {}
+            if (enabled) start(); else stop();
+        },
+        isEnabled: function () { return running; }
+    };
+
+    // 尊重系统"减少动态效果": 默认不自动启动 (设置面板手动开启仍可用)
+    var motionReduced = !!(window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    if (storedEnabled('particles') && !motionReduced) start();
+})();
+</script>
+<!-- # 这是天气 # -->
+<div id="tp-weather-widget"></div>
+<script>
+(function () {
+    'use strict';
+
+    var weatherConfig = {
+        flavor: 'bubble',
+        location: 'WKND5EK53SYX',
+        geolocation: true,
+        language: 'zh-Hans',
+        unit: 'c',
+        theme: 'auto',
+        token: 'c154a7e8-ec5d-49f8-b6a1-b1fb652e2534',
+        hover: 'enabled',
+        container: 'tp-weather-widget'
+    };
+    var loaded = false;
+
+    function enabledByDefault() {
+        try { return localStorage.getItem('suka-setting-weather') !== '0'; } catch (e) { return true; }
+    }
+
+    function show() {
+        if (typeof window.SeniverseWeatherWidget === 'function') {
+            window.SeniverseWeatherWidget('show', weatherConfig);
+        }
+    }
+
+    function load() {
+        if (loaded) { show(); return; }
+        loaded = true;
+        window.SeniverseWeatherWidgetObject = 'SeniverseWeatherWidget';
+        window.SeniverseWeatherWidget = window.SeniverseWeatherWidget || function () {
+            (window.SeniverseWeatherWidget.q = window.SeniverseWeatherWidget.q || []).push(arguments);
+        };
+        window.SeniverseWeatherWidget.l = +new Date();
+        var script = document.createElement('script');
+        script.src = '//cdn.sencdn.com/widget2/static/js/bundle.js?t=' + parseInt((new Date().getTime() / 100000000).toString(), 10);
+        script.charset = 'utf-8';
+        script.async = true;
+        script.onload = show;
+        document.head.appendChild(script);
+    }
+
+    window.SukaWeather = {
+        setEnabled: function (enabled) {
+            try { localStorage.setItem('suka-setting-weather', enabled ? '1' : '0'); } catch (e) {}
+            document.documentElement.classList.toggle('suka-weather-disabled', !enabled);
+            if (enabled) load();
+        },
+        isEnabled: function () { return !document.documentElement.classList.contains('suka-weather-disabled'); }
+    };
+
+    var enabled = enabledByDefault();
+    document.documentElement.classList.toggle('suka-weather-disabled', !enabled);
+    if (enabled) load();
+})();
+</script>
+
+
